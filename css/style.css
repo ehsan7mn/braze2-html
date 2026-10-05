@@ -480,7 +480,7 @@ section {
 	will-change: transform;
 }
 .visionCard.glass::before {
-	background: var(--glass_strong);
+	background: linear-gradient(145deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04));
 }
 .visionCard__title {
 	margin-bottom: 25px;
