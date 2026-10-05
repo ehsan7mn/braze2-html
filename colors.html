@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="rtl" lang="fa-IR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Persiantik.net">
+	<title>جدول رنگ‌های قالب | Braze Battery</title>
+    <link rel="stylesheet" href="css/bootstrap.rtl.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="navOuter">
+	<div class="container">
+		<nav class="mainNav glass">
+			<a href="index.html" class="navLogo">
+				<img src="img/logo1-light.png" class="logoLight" alt="برِیز">
+				<img src="img/logo1.png" class="logoDark" alt="برِیز">
+			</a>
+			<ul class="mainMenu">
+				<li class="menu-item"><a href="index.html">صفحه نخست</a></li>
+				<li class="menu-item"><a href="colors.html">جدول رنگ‌ها</a></li>
+			</ul>
+			<div class="navTools">
+				<a href="index.html" class="navIcon" aria-label="بازگشت"><i class="bi bi-arrow-left"></i></a>
+			</div>
+		</nav>
+	</div>
+</div>
+
+<section class="colorsPage">
+	<div class="container">
+		<h1>جدول رنگ‌های قالب</h1>
+		<p class="mb-5">مقدار هر متغیر مستقیم از <code class="ltr">css/style.css</code> خوانده می‌شود، پس این جدول
+			همیشه با قالب هم‌خوان است.</p>
+
+		<table class="colorsTable">
+			<thead>
+				<tr>
+					<th style="width:90px">دایره</th>
+					<th style="width:90px">مربع</th>
+					<th>متغیر</th>
+					<th>مقدار</th>
+					<th>کاربرد</th>
+				</tr>
+			</thead>
+			<tbody id="colorsBody"></tbody>
+		</table>
+	</div>
+</section>
+
+<script>
+var themeColors = [
+	['--primary', 'رنگ اصلی قالب'],
+	['--secondary', 'رنگ دوم'],
+	['--third', 'رنگ سوم'],
+	['--fourth', 'رنگ چهارم'],
+	['--fifth', 'رنگ پنجم'],
+	['--bg', 'بک‌گراند اصلی سایت (تم تیره)'],
+	['--bg_dark', 'بک‌گراند تیره کمکی'],
+	['--bg_gray', 'خاکستری سکشن Braze'],
+	['--hover', 'رنگ هاور'],
+	['--text', 'رنگ متن روی تم تیره'],
+	['--text_dark', 'رنگ متن روی زمینه روشن'],
+	['--glass', 'بک‌گراند شیشه‌ای منو و کادرها'],
+	['--glass_strong', 'بک‌گراند شیشه‌ای پررنگ‌تر (هاور)'],
+	['--glass_border', 'بوردر عناصر شیشه‌ای'],
+	['--cover', 'کاور مشکی روی تصاویر'],
+	['--green1', 'سبز روشن'],
+	['--green2', 'سبز تیره'],
+	['--gray1', 'خاکستری روشن'],
+	['--gray2', 'خاکستری'],
+	['--gray_dark', 'خاکستری تیره'],
+	['--footer', 'بک‌گراند فوتر']
+];
+
+(function () {
+	var styles = getComputedStyle(document.body);
+	var rows = themeColors.map(function (item) {
+		var value = styles.getPropertyValue(item[0]).trim();
+		return '<tr>' +
+			'<td><span class="colorSwatch" style="background:' + value + '"></span></td>' +
+			'<td><span class="colorSwatch colorSwatch--square" style="background:' + value + '"></span></td>' +
+			'<td><code>' + item[0] + '</code></td>' +
+			'<td><span class="colorValue">' + value + '</span></td>' +
+			'<td>' + item[1] + '</td>' +
+			'</tr>';
+	});
+	document.getElementById('colorsBody').innerHTML = rows.join('');
+})();
+</script>
+</body>
+</html>
