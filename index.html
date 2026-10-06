@@ -70,33 +70,36 @@
 <!-- end header -->
 
 
-<!-- start hero slider -->
-<section class="heroSec lightArea">
-	<div class="swiper heroSwiper">
-		<div class="swiper-wrapper">
-			<div class="swiper-slide">
-				<div class="heroSlide" style="background-image:url('img/slider1.jpg')"></div>
-			</div>
-			<div class="swiper-slide">
-				<div class="heroSlide" style="background-image:url('img/slider2.jpg')"></div>
-			</div>
-		</div>
-	</div>
-	<div class="blackCover"></div>
-	<div class="lightBlock lightBlock_active"></div>
-</section>
-<!-- end hero slider -->
-
-
-<!-- start braze dissolve -->
-<section class="dissolveSec">
+<!-- start hero + braze dissolve -->
+<div class="dissolveWrap">
 	<canvas class="dissolveCanvas"></canvas>
 	<div class="dissolveFallback"></div>
-	<div class="container">
-		<h2 class="dissolveTitle">Braze</h2>
-	</div>
-</section>
-<!-- end braze dissolve -->
+
+	<section class="heroSec lightArea">
+		<div class="swiper heroSwiper">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide">
+					<div class="heroSlide" style="background-image:url('img/slider1.jpg')"></div>
+				</div>
+				<div class="swiper-slide">
+					<div class="heroSlide" style="background-image:url('img/slider2.jpg')"></div>
+				</div>
+				<div class="swiper-slide">
+					<div class="heroSlide" style="background-image:url('img/slider3.jpg')"></div>
+				</div>
+			</div>
+		</div>
+		<div class="blackCover"></div>
+		<div class="lightBlock lightBlock_active"></div>
+	</section>
+
+	<section class="dissolveSec">
+		<div class="container">
+			<h2 class="dissolveTitle">Braze</h2>
+		</div>
+	</section>
+</div>
+<!-- end hero + braze dissolve -->
 
 
 <!-- start brand vision -->
@@ -138,18 +141,6 @@
 							<div class="certItem">
 								<div class="certItem__img" data-parallax
 									style="background-image:url('img/cert2.jpg')"></div>
-							</div>
-						</div>
-						<div class="col-6">
-							<div class="certItem">
-								<div class="certItem__img" data-parallax
-									style="background-image:url('img/cert3.jpg')"></div>
-							</div>
-						</div>
-						<div class="col-6">
-							<div class="certItem">
-								<div class="certItem__img" data-parallax
-									style="background-image:url('img/cert4.jpg')"></div>
 							</div>
 						</div>
 					</div>
@@ -228,7 +219,7 @@
 							style="background-image:url('img/product1.jpg')"></div>
 						<a href="#" class="productItem__link" aria-label="باتری UPS ۱۲ ولت ۷ آمپر"></a>
 					</div>
-					<div class="productItem__cont" data-aos="fade-up">
+					<div class="productItem__cont ss02" data-aos="fade-up">
 						<h4>باتری UPS ۱۲ ولت ۷ آمپر</h4>
 					</div>
 				</div>
@@ -239,7 +230,7 @@
 							style="background-image:url('img/product2.jpg')"></div>
 						<a href="#" class="productItem__link" aria-label="باتری اینورتر ۱۰۰ آمپر"></a>
 					</div>
-					<div class="productItem__cont" data-aos="fade-up">
+					<div class="productItem__cont ss02" data-aos="fade-up">
 						<h4>باتری اینورتر ۱۰۰ آمپر</h4>
 					</div>
 				</div>
@@ -250,8 +241,19 @@
 							style="background-image:url('img/product3.jpg')"></div>
 						<a href="#" class="productItem__link" aria-label="باتری اتمی ۷۴ آمپر"></a>
 					</div>
-					<div class="productItem__cont" data-aos="fade-up">
+					<div class="productItem__cont ss02" data-aos="fade-up">
 						<h4>باتری اتمی ۷۴ آمپر</h4>
+					</div>
+				</div>
+
+				<div class="productItem">
+					<div class="productItem__media">
+						<div class="productItem__img" data-parallax
+							style="background-image:url('img/product4.jpg')"></div>
+						<a href="#" class="productItem__link" aria-label="باتری شارژی ۲۰۰۰ میلی‌آمپر"></a>
+					</div>
+					<div class="productItem__cont ss02" data-aos="fade-up">
+						<h4>باتری شارژی ۲۰۰۰ میلی‌آمپر</h4>
 					</div>
 				</div>
 			</div>
@@ -264,7 +266,7 @@
 
 <!-- start consult parallax -->
 <section class="consultSec lightArea">
-	<div class="consultSec__bg" data-parallax style="background-image:url('img/parallax1.jpg')"></div>
+	<div class="consultSec__bg" data-parallax style="background-image:url('img/parallax.jpg')"></div>
 	<div class="blackCover"></div>
 	<div class="lightBlock lightBlock_active"></div>
 	<div class="container">
@@ -275,6 +277,103 @@
 	</div>
 </section>
 <!-- end consult parallax -->
+
+
+<!-- start blog -->
+<section class="blogSec">
+	<div class="container">
+		<h2 class="blogSec__title revealWords">اخبار و مقالات</h2>
+		<div class="row g-4">
+			<div class="col-lg-4">
+				<article class="blogItem" data-aos="fade-up">
+					<div class="blogItem__media">
+						<img src="img/blog1.jpg" alt="عملکرد باتری در سرمای شدید" class="blogItem__img">
+						<a href="#" class="blogItem__link" aria-label="عملکرد باتری در سرمای شدید"></a>
+					</div>
+					<div class="blogItem__cont">
+						<span class="blogItem__cat">مقالات تخصصی</span>
+						<h3 class="blogItem__name">عملکرد باتری در سرمای شدید و شرایط سخت</h3>
+					</div>
+				</article>
+			</div>
+			<div class="col-lg-4">
+				<article class="blogItem" data-aos="fade-up" data-aos-delay="80">
+					<div class="blogItem__media">
+						<img src="img/blog2.jpg" alt="نکات نگهداری باتری‌های UPS صنعتی" class="blogItem__img">
+						<a href="#" class="blogItem__link" aria-label="نکات نگهداری باتری‌های UPS صنعتی"></a>
+					</div>
+					<div class="blogItem__cont">
+						<span class="blogItem__cat">مقالات تخصصی</span>
+						<h3 class="blogItem__name">نکات نگهداری باتری‌های UPS صنعتی</h3>
+					</div>
+				</article>
+			</div>
+			<div class="col-lg-4">
+				<article class="blogItem" data-aos="fade-up" data-aos-delay="160">
+					<div class="blogItem__media">
+						<img src="img/blog3.jpg" alt="حضور برِیز در نمایشگاه صنعت برق" class="blogItem__img">
+						<a href="#" class="blogItem__link" aria-label="حضور برِیز در نمایشگاه صنعت برق"></a>
+					</div>
+					<div class="blogItem__cont">
+						<span class="blogItem__cat">اخبار شرکت</span>
+						<h3 class="blogItem__name">حضور برِیز در نمایشگاه صنعت برق</h3>
+					</div>
+				</article>
+			</div>
+		</div>
+		<div class="blogSec__more">
+			<a href="#" class="btnFramed"><span>آرشیو اخبار و مقالات</span></a>
+		</div>
+	</div>
+</section>
+<!-- end blog -->
+
+
+<!-- start footer -->
+<footer class="siteFooter">
+	<div class="container">
+		<div class="row g-4">
+			<div class="col-lg-4">
+				<div class="footerBox">
+					<a href="index.html" class="footerLogo">
+						<img src="img/logo1-light.png" alt="برِیز">
+					</a>
+					<p class="footerAbout">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از
+						طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای
+						شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای
+						زیادی در شصت و سه درصد گذشته حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد.</p>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<div class="footerBox">
+					<div class="footerLine ss02">
+						<i class="bi bi-geo-alt"></i>
+						<span>تهران، خیابان مطهری، خیابان حاتمی، بن بست جمشید، پلاک 3، واحد 6</span>
+					</div>
+					<div class="footerLine ss02">
+						<i class="bi bi-telephone"></i>
+						<a href="tel:02188457457">88457457</a>
+					</div>
+					<div class="footerLine ss02">
+						<i class="bi bi-whatsapp"></i>
+						<a href="https://wa.me/989121234567">09121234567</a>
+					</div>
+					<div class="footerSocial">
+						<a href="#" class="footerSocial__btn" aria-label="اینستاگرام"><i class="bi bi-instagram"></i></a>
+						<a href="#" class="footerSocial__btn" aria-label="تلگرام"><i class="bi bi-telegram"></i></a>
+						<a href="#" class="footerSocial__btn" aria-label="واتساپ"><i class="bi bi-whatsapp"></i></a>
+						<a href="#" class="footerSocial__btn" aria-label="یوتیوب"><i class="bi bi-youtube"></i></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footerCopy">
+			<div class="footerCopy__right">کلیه حقوق سایت متعلق به "شرکت پیل سازان جهانتاب" می باشد.</div>
+			<div class="footerCopy__left">طراحی سایت : پرشین تیک</div>
+		</div>
+	</div>
+</footer>
+<!-- end footer -->
 
 
 <script src="js/swiper-bundle.min.js"></script>
