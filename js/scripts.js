@@ -155,8 +155,8 @@
 
 		function resize() {
 			var ratio = Math.min(window.devicePixelRatio || 1, 2);
-			width = Math.round(section.offsetWidth * ratio);
-			height = Math.round(section.offsetHeight * ratio);
+			width = Math.round(window.innerWidth * ratio);
+			height = Math.round(window.innerHeight * ratio);
 			canvas.width = width;
 			canvas.height = height;
 			gl.viewport(0, 0, width, height);
@@ -173,8 +173,11 @@
 		};
 	}
 
+	var dissolveWrap = document.querySelector('.dissolveWrap');
 	var dissolveSection = document.querySelector('.dissolveSec');
-	var drawDissolve = dissolveSection ? createDissolve(dissolveSection) : null;
+	var dissolveTitleHold = document.querySelector('.dissolveTitleHold');
+	var dissolveClip = document.querySelector('.dissolveClip');
+	var drawDissolve = dissolveWrap ? createDissolve(dissolveWrap) : null;
 	var navOuter = document.querySelector('.navOuter');
 	/* end braze dissolve */
 
@@ -244,13 +247,24 @@
 		if (!drawDissolve || !dissolveSection) {
 			return;
 		}
-		var box = dissolveSection.getBoundingClientRect();
-		/* fully covered by the time the section reaches the top of the viewport */
-		var progress = clamp((viewport - box.top) / viewport, 0, 1);
+		/* starts the frame the hero leaves the top — same mapping as Vexium */
+		var progress = clamp((window.pageYOffset || window.scrollY || 0) / viewport, 0, 1);
 		drawDissolve(progress * 1.1);
 
+		var wrapBox = dissolveWrap.getBoundingClientRect();
+		var overlayH = clamp(wrapBox.bottom, 0, viewport);
+		if (dissolveClip) {
+			dissolveClip.style.height = overlayH + 'px';
+			dissolveClip.style.visibility = overlayH <= 0 ? 'hidden' : 'visible';
+		}
+
+		if (dissolveTitleHold) {
+			/* title rides the gray curtain, not a later black slab */
+			dissolveTitleHold.style.opacity = clamp((progress - 0.06) / 0.22, 0, 1);
+		}
+
 		if (navOuter) {
-			navOuter.classList.toggle('isOnLight', progress > 0.5 && box.top <= 76 && box.bottom >= 14);
+			navOuter.classList.toggle('isOnLight', progress > 0.45 && wrapBox.bottom >= 14);
 		}
 	}
 
