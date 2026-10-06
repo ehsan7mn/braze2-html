@@ -175,6 +175,8 @@
 
 	var dissolveWrap = document.querySelector('.dissolveWrap');
 	var dissolveSection = document.querySelector('.dissolveSec');
+	var dissolveTitleHold = document.querySelector('.dissolveTitleHold');
+	var dissolveClip = document.querySelector('.dissolveClip');
 	var drawDissolve = dissolveWrap ? createDissolve(dissolveWrap) : null;
 	var navOuter = document.querySelector('.navOuter');
 	/* end braze dissolve */
@@ -249,9 +251,20 @@
 		var progress = clamp((window.pageYOffset || window.scrollY || 0) / viewport, 0, 1);
 		drawDissolve(progress * 1.1);
 
+		var wrapBox = dissolveWrap.getBoundingClientRect();
+		var overlayH = clamp(wrapBox.bottom, 0, viewport);
+		if (dissolveClip) {
+			dissolveClip.style.height = overlayH + 'px';
+			dissolveClip.style.visibility = overlayH <= 0 ? 'hidden' : 'visible';
+		}
+
+		if (dissolveTitleHold) {
+			/* title rides the gray curtain, not a later black slab */
+			dissolveTitleHold.style.opacity = clamp((progress - 0.06) / 0.22, 0, 1);
+		}
+
 		if (navOuter) {
-			var box = dissolveSection.getBoundingClientRect();
-			navOuter.classList.toggle('isOnLight', progress > 0.45 && box.bottom >= 14);
+			navOuter.classList.toggle('isOnLight', progress > 0.45 && wrapBox.bottom >= 14);
 		}
 	}
 

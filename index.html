@@ -72,8 +72,15 @@
 
 <!-- start hero + braze dissolve -->
 <div class="dissolveWrap">
-	<canvas class="dissolveCanvas"></canvas>
-	<div class="dissolveFallback"></div>
+	<div class="dissolveSticky">
+		<div class="dissolveClip">
+			<canvas class="dissolveCanvas"></canvas>
+			<div class="dissolveFallback"></div>
+			<div class="dissolveTitleHold">
+				<h2 class="dissolveTitle">Braze</h2>
+			</div>
+		</div>
+	</div>
 
 	<section class="heroSec lightArea">
 		<div class="swiper heroSwiper">
@@ -93,11 +100,7 @@
 		<div class="lightBlock lightBlock_active"></div>
 	</section>
 
-	<section class="dissolveSec">
-		<div class="container">
-			<h2 class="dissolveTitle">Braze</h2>
-		</div>
-	</section>
+	<section class="dissolveSec" aria-hidden="true"></section>
 </div>
 <!-- end hero + braze dissolve -->
 
