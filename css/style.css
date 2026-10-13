@@ -141,6 +141,24 @@ section {
 	pointer-events: none;
 	background: var(--cover);
 }
+.blurDiv {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 90;
+	height: 100px;
+	pointer-events: none;
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	-webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 100%);
+	mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, #000 100%);
+}
+@media (max-width: 991px) {
+	.blurDiv {
+		display: none;
+	}
+}
 /* end helpers */
 
 /* start lightBlock - the cursor light, see README */
@@ -246,15 +264,17 @@ section {
 }
 .mainNav {
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	justify-content: space-between;
 	gap: 14px;
 	padding: 10px 14px;
+	overflow: visible;
 }
 .navLogo {
 	order: 3;
 	display: flex;
 	align-items: center;
+	align-self: center;
 	padding: 0 10px;
 }
 .navLogo img {
@@ -293,7 +313,7 @@ section {
 .mainMenu {
 	order: 2;
 	display: flex;
-	align-items: center;
+	align-items: stretch;
 	gap: 2px;
 	margin: 0;
 	padding: 0;
@@ -301,6 +321,16 @@ section {
 }
 .mainMenu > li {
 	position: relative;
+	display: flex;
+	align-items: center;
+}
+.mainMenu > .menu-item-has-children::after {
+	content: "";
+	position: absolute;
+	top: 100%;
+	right: 0;
+	left: 0;
+	height: 18px;
 }
 .mainMenu > li > a {
 	display: flex;
@@ -320,15 +350,14 @@ section {
 }
 .subArrow {
 	font-size: .65rem;
-	transition: transform .4s cubic-bezier(.3, .8, .3, 1);
 }
-.mainMenu li:hover > a > .subArrow {
-	transform: rotate(180deg);
+.subMenu .subArrow {
+	font-size: .72rem;
 }
 
 .subMenu {
 	position: absolute;
-	top: 100%;
+	top: calc(100% + 15px);
 	right: 0;
 	left: auto;
 	z-index: 10;
@@ -336,13 +365,13 @@ section {
 	margin: 0;
 	padding: 14px 0;
 	list-style: none;
-	border-radius: 0 0 var(--radius1) var(--radius1);
+	border-radius: var(--radius1);
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
 	transform: perspective(300px) rotateX(-18deg);
 	transform-origin: top;
-	transition: all .25s ease-in-out;
+	transition: opacity .25s ease-in-out, visibility .25s ease-in-out, transform .25s ease-in-out;
 }
 .mainMenu li:hover > .subMenu {
 	opacity: 1;
@@ -352,6 +381,14 @@ section {
 }
 .subMenu > li {
 	position: relative;
+}
+.subMenu > .menu-item-has-children::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 100%;
+	width: 10px;
+	height: 100%;
 }
 .subMenu > li::before {
 	content: "";
@@ -382,10 +419,11 @@ section {
 }
 .subMenu .subMenu {
 	top: 0;
-	right: 100%;
+	right: calc(100% + 6px);
 	left: auto;
 	padding: 14px 0;
-	border-radius: var(--radius1) 0 0 var(--radius1);
+	border-radius: var(--radius1);
+	transform-origin: right center;
 }
 
 /* end header */
@@ -794,11 +832,21 @@ a.titleLink:hover {
 	font-size: 15px;
 	font-weight: 400;
 }
+@media (min-width: 992px) {
+	.siteFooter .row {
+		align-items: stretch;
+	}
+	.siteFooter .row > [class*="col-"] {
+		display: flex;
+	}
+}
 .footerBox {
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
+	width: 100%;
+	height: 100%;
 	padding: 40px 36px 16px;
 	border-radius: var(--radius1);
 }
