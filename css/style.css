@@ -382,7 +382,7 @@ section {
 .heroSec {
 	position: relative;
 	padding: 0;
-	height: 120vh;
+	height: calc(120vh + 80px);
 	overflow: hidden;
 	background: #000;
 }
@@ -441,7 +441,7 @@ section {
 .dissolveTitle {
 	position: absolute;
 	right: 0;
-	bottom: 0;
+	bottom: 80px;
 	left: 0;
 	z-index: 9;
 	margin: 0;
@@ -494,13 +494,11 @@ section {
 }
 .certItem__img {
 	position: absolute;
-	top: 0;
-	left: 0;
+	inset: 0;
 	width: 100%;
-	height: 170px;
+	height: 100%;
 	background-position: center center;
 	background-size: cover;
-	will-change: transform;
 }
 /* end brand vision */
 
@@ -564,6 +562,7 @@ section {
 .productsHead {
 	position: sticky;
 	top: 150px;
+	z-index: 2;
 }
 .productsHead__title {
 	margin-bottom: 20px;
@@ -638,25 +637,32 @@ section {
 .titleLink {
 	position: relative;
 	display: inline-block;
+	padding-bottom: 8px;
 	color: inherit;
 }
 .titleLink::after {
-	content: attr(data-text);
+	content: "";
 	position: absolute;
-	top: 0;
 	right: 0;
+	bottom: 0;
 	left: 0;
-	color: var(--primary);
-	clip-path: inset(0 100% 0 0);
-	transition: clip-path .45s ease;
+	height: 2px;
+	background: var(--primary);
+	transform: scaleX(0);
+	transform-origin: right;
+	transition: transform .4s ease;
 	pointer-events: none;
-	white-space: inherit;
 }
 .titleLink:hover {
 	color: inherit;
 }
-.titleLink:hover::after {
-	clip-path: inset(0 0 0 0);
+.titleLink.titleLink--in::after {
+	transform: scaleX(1);
+	transform-origin: right;
+}
+.titleLink.titleLink--out::after {
+	transform: scaleX(0);
+	transform-origin: left;
 }
 /* end products */
 
@@ -777,18 +783,26 @@ section {
 	flex-direction: column;
 	overflow: hidden;
 	height: 100%;
-	min-height: 520px;
-	padding: 40px 36px;
+	padding: 40px 36px 24px;
+	border-radius: var(--radius1);
+}
+.footerBox__bg {
+	position: absolute;
+	top: -90px;
+	left: 0;
+	z-index: 0;
+	width: 100%;
+	height: calc(100% + 180px);
 	background-position: center center;
 	background-size: cover;
 	background-repeat: no-repeat;
-	border-radius: var(--radius1);
+	will-change: transform;
 }
 .footerBox::before {
 	content: "";
 	position: absolute;
 	inset: 0;
-	z-index: 0;
+	z-index: 1;
 	pointer-events: none;
 	background: linear-gradient(165deg, rgba(10, 10, 10, .58) 0%, rgba(10, 10, 10, .82) 100%);
 }
@@ -962,13 +976,20 @@ section {
 	padding: 0;
 	border: 1px solid var(--glass_border);
 	border-radius: 50%;
-	color: var(--text);
+	color: #fff;
 	background: transparent;
 	line-height: 1;
 }
-.footerSocial__btn i {
-	display: block;
+.footerSocial__btn i,
+.footerSocial__btn i::before,
+.footerSocial__btn i.bi::before,
+.footerSocial__btn [class^="bi-"]::before {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
 	line-height: 1;
+	vertical-align: 0;
 }
 .footerSocial__btn--ig {
 	width: auto;
@@ -980,10 +1001,17 @@ section {
 	font-weight: 400;
 	line-height: 1;
 }
-.footerSocial__btn:hover {
+a.footerSocial__btn:hover,
+a.footerSocial__btn:hover i,
+a.footerSocial__btn:hover i::before {
 	color: #fff;
 	background: var(--primary);
 	border-color: var(--primary);
+}
+a.footerSocial__btn:hover i,
+a.footerSocial__btn:hover i::before {
+	background: transparent;
+	border-color: transparent;
 }
 .footerCopy {
 	display: flex;

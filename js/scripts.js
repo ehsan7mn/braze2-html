@@ -17,6 +17,16 @@
 			smooth: 2,
 			effects: true
 		});
+		if (document.querySelector('.productsHead') && document.querySelector('.productsSec')) {
+			window.ScrollTrigger.create({
+				trigger: '.productsHead',
+				start: 'top 150px',
+				endTrigger: '.productsSec',
+				end: 'bottom bottom',
+				pin: true,
+				pinSpacing: false
+			});
+		}
 	}
 
 	function getScroll() {
@@ -199,6 +209,19 @@
 	var drawDissolve = heroSec ? createDissolve(heroSec) : null;
 	var dissolveProgress = 0;
 	/* end braze dissolve */
+
+	/* start title underline — in from the right, out to the left */
+	Array.prototype.forEach.call(document.querySelectorAll('.titleLink'), function (link) {
+		link.addEventListener('mouseenter', function () {
+			link.classList.remove('titleLink--out');
+			link.classList.add('titleLink--in');
+		});
+		link.addEventListener('mouseleave', function () {
+			link.classList.remove('titleLink--in');
+			link.classList.add('titleLink--out');
+		});
+	});
+	/* end title underline */
 
 	/* start split title into words */
 	Array.prototype.forEach.call(document.querySelectorAll('.revealWords'), function (title) {
