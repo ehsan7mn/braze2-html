@@ -17,16 +17,6 @@
 			smooth: 2,
 			effects: true
 		});
-		if (document.querySelector('.productsHead') && document.querySelector('.productsSec')) {
-			window.ScrollTrigger.create({
-				trigger: '.productsHead',
-				start: 'top 150px',
-				endTrigger: '.productsSec',
-				end: 'bottom bottom',
-				pin: true,
-				pinSpacing: false
-			});
-		}
 	}
 
 	function getScroll() {
@@ -323,6 +313,31 @@
 		window.gsap.ticker.add(requestUpdate);
 	}
 	update();
+
+	if (smoother && window.ScrollTrigger && document.querySelector('.productsHead')) {
+		window.ScrollTrigger.matchMedia({
+			'(min-width: 992px)': function () {
+				var pin = window.ScrollTrigger.create({
+					trigger: '.productsHead',
+					start: 'top 140px',
+					endTrigger: '.productsSec',
+					end: 'bottom bottom',
+					pin: true,
+					pinSpacing: false,
+					pinType: 'transform',
+					anticipatePin: 1,
+					invalidateOnRefresh: true
+				});
+				window.ScrollTrigger.refresh();
+				return function () {
+					pin.kill();
+				};
+			}
+		});
+		window.addEventListener('load', function () {
+			window.ScrollTrigger.refresh();
+		});
+	}
 	/* end scroll driven effects */
 
 	/* start blog glitch — Lumna journal hover-effect, raw WebGL, no Three/GSAP */
