@@ -360,7 +360,8 @@
 		var gl = canvas.getContext('webgl', {
 			alpha: false,
 			antialias: false,
-			premultipliedAlpha: false
+			premultipliedAlpha: false,
+			preserveDrawingBuffer: true
 		});
 		if (!gl) {
 			return;
@@ -446,6 +447,7 @@
 			gl.activeTexture(gl.TEXTURE2);
 			gl.bindTexture(gl.TEXTURE_2D, texDisp);
 			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+			canvas.dataset.disp = String(dispFactor);
 		}
 
 		function tick(now) {
@@ -498,10 +500,11 @@
 		loadGlTexture(gl, img2.src, gl.CLAMP_TO_EDGE, bindTex(function (tex) {
 			tex2 = tex;
 		}));
-		loadGlTexture(gl, dispUrl, gl.REPEAT, bindTex(function (tex) {
+		loadGlTexture(gl, dispUrl, gl.CLAMP_TO_EDGE, bindTex(function (tex) {
 			texDisp = tex;
 		}));
 
+		media._glitchGo = go;
 		var item = media.closest('.blogItem') || media;
 		item.addEventListener('mouseenter', function () {
 			go(1, 1.6);
