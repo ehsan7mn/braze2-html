@@ -382,7 +382,8 @@ section {
 .heroSec {
 	position: relative;
 	padding: 0;
-	height: 100vh;
+	height: 120vh;
+	overflow: hidden;
 	background: #000;
 }
 .heroSwiper,
@@ -413,83 +414,49 @@ section {
 }
 /* end hero slider */
 
-/* start braze dissolve
-   sticky 100vh canvas sits on the hero so the black noise starts the instant
-   the slider scrolls — Vexium curtain, but #1a1a1a so the white Braze reads */
-.dissolveWrap {
-	position: relative;
-}
-/* 0-height sticky sentinel: the 100vh layers unpin the moment the wrap leaves */
-.dissolveSticky {
-	position: sticky;
-	top: 0;
-	z-index: 4;
-	height: 0;
-	pointer-events: none;
-}
-.dissolveClip {
-	position: relative;
-	width: 100%;
-	height: 100vh;
-	overflow: hidden;
-}
+/* start braze dissolve — Vexium hero-canvas + lg-text, gray #e1e1e1 */
 .dissolveCanvas,
 .dissolveFallback {
 	position: absolute;
-	top: 0;
+	bottom: -1px;
 	left: 0;
 	display: block;
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	pointer-events: none;
+	z-index: 8;
 }
 .dissolveFallback {
 	display: none;
-	background: var(--bg);
+	background: var(--bg_gray);
 	transform-origin: bottom center;
 	transform: scaleY(0);
 }
-.dissolveWrap.noWebgl .dissolveCanvas {
+.heroSec.noWebgl .dissolveCanvas {
 	display: none;
 }
-.dissolveWrap.noWebgl .dissolveFallback {
+.heroSec.noWebgl .dissolveFallback {
 	display: block;
 }
-.dissolveTitleHold {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 2;
-	display: flex;
-	align-items: flex-end;
-	justify-content: center;
-	width: 100%;
-	height: 100vh;
-	padding: 0;
-	overflow: hidden;
-	pointer-events: none;
-}
-.dissolveSec {
-	position: relative;
-	z-index: 2;
-	min-height: 70vh;
-	background: var(--bg);
-}
 .dissolveTitle {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 9;
 	margin: 0;
 	font-size: 25vw;
 	line-height: .8;
 	font-weight: 500;
 	text-align: center;
 	color: #fff;
-	transform: translateY(48%);
-	will-change: transform;
+	pointer-events: none;
 }
 /* end braze dissolve */
 
 /* start brand vision */
 .visionSec {
-	padding: 100px 0;
+	padding: 80px 0;
 	background: var(--bg);
 }
 .visionCard {
@@ -624,7 +591,7 @@ section {
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 700px;
+	height: 850px;
 	background-position: center center;
 	background-size: cover;
 	will-change: transform;
@@ -652,7 +619,7 @@ section {
 }
 .productItem__tags a:hover {
 	color: #3d3d3d;
-	background: #fff;
+	background: var(--third);
 }
 .productItem__link {
 	position: absolute;
@@ -667,6 +634,29 @@ section {
 	font-size: 1.5rem;
 	font-weight: 500;
 	line-height: 1.6;
+}
+.titleLink {
+	position: relative;
+	display: inline-block;
+	color: inherit;
+}
+.titleLink::after {
+	content: attr(data-text);
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	color: var(--primary);
+	clip-path: inset(0 100% 0 0);
+	transition: clip-path .45s ease;
+	pointer-events: none;
+	white-space: inherit;
+}
+.titleLink:hover {
+	color: inherit;
+}
+.titleLink:hover::after {
+	clip-path: inset(0 0 0 0);
 }
 /* end products */
 
@@ -684,7 +674,7 @@ section {
 	left: 0;
 	z-index: 1;
 	width: 100%;
-	height: 800px;
+	height: 900px;
 	background-position: center center;
 	background-size: cover;
 	will-change: transform;
@@ -710,7 +700,7 @@ section {
 
 /* start blog */
 .blogSec {
-	padding: 100px 0;
+	padding: 80px 0;
 	background: var(--bg);
 }
 .blogSec__title {
@@ -765,6 +755,9 @@ section {
 	font-size: 1.25rem;
 	line-height: 1.7;
 }
+.blogItem__name .titleLink {
+	display: inline;
+}
 .blogSec__more {
 	margin-top: 60px;
 	text-align: center;
@@ -773,8 +766,10 @@ section {
 
 /* start footer */
 .siteFooter {
-	padding: 80px 0 30px;
+	padding: 0 0 30px;
 	background: var(--bg);
+	font-size: 15px;
+	font-weight: 400;
 }
 .footerBox {
 	position: relative;
@@ -874,12 +869,15 @@ section {
 .footerAbout {
 	margin: 0;
 	text-align: justify;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1.9;
 	color: rgba(255, 255, 255, .78);
 }
 .footerQuick__title {
 	margin-bottom: 22px;
-	font-size: 1.35rem;
-	font-weight: 500;
+	font-size: 15px;
+	font-weight: 400;
 	line-height: 1.4;
 }
 .footerQuick {
@@ -898,6 +896,7 @@ section {
 	align-items: center;
 	gap: 8px;
 	color: rgba(255, 255, 255, .88);
+	font-size: 15px;
 	font-weight: 400;
 }
 .footerLinks a i {
@@ -926,15 +925,20 @@ section {
 }
 .footerLine {
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: 14px;
 	margin-bottom: 14px;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1.7;
 	color: var(--text);
 }
 .footerLine i {
-	margin-top: 6px;
+	flex: none;
+	margin: 0;
 	font-size: 1.1rem;
-	color: var(--primary);
+	line-height: 1;
+	color: var(--text);
 }
 .footerLine a {
 	color: inherit;
@@ -947,7 +951,7 @@ section {
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 12px;
-	margin-top: 28px;
+	margin-top: 0;
 }
 .footerSocial__btn {
 	display: inline-flex;
@@ -955,18 +959,26 @@ section {
 	justify-content: center;
 	width: 44px;
 	height: 44px;
+	padding: 0;
 	border: 1px solid var(--glass_border);
 	border-radius: 50%;
 	color: var(--text);
 	background: transparent;
+	line-height: 1;
+}
+.footerSocial__btn i {
+	display: block;
+	line-height: 1;
 }
 .footerSocial__btn--ig {
 	width: auto;
+	height: 44px;
 	padding: 0 18px;
 	gap: 8px;
 	border-radius: 50px;
-	font-size: .9rem;
-	font-weight: 500;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1;
 }
 .footerSocial__btn:hover {
 	color: #fff;
@@ -980,13 +992,21 @@ section {
 	gap: 20px;
 	margin-top: 28px;
 	padding-top: 22px;
-	font-size: .9rem;
+	font-size: 15px;
 	font-weight: 400;
 	color: rgba(255, 255, 255, .65);
 }
-.footerCopy__left,
-.footerCopy__right {
+.footerCopy__main {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+}
+.footerCopy__copy,
+.footerCopy__design {
 	margin: 0;
+	font-size: 15px;
+	font-weight: 400;
 }
 .footerCopy a {
 	color: inherit;

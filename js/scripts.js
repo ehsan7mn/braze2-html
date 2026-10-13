@@ -6,6 +6,27 @@
 		return v < min ? min : (v > max ? max : v);
 	};
 
+	/* start scroll smoother — Vexium / Lumna #smooth-wrapper + #smooth-content */
+	var smoother = null;
+	if (window.gsap && window.ScrollTrigger && window.ScrollSmoother && document.querySelector('#smooth-content')) {
+		window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
+		window.ScrollTrigger.normalizeScroll(false);
+		smoother = window.ScrollSmoother.create({
+			wrapper: '#smooth-wrapper',
+			content: '#smooth-content',
+			smooth: 2,
+			effects: true
+		});
+	}
+
+	function getScroll() {
+		if (smoother) {
+			return smoother.scrollTop();
+		}
+		return window.pageYOffset || window.scrollY || 0;
+	}
+	/* end scroll smoother */
+
 	/* start hero slider */
 	if (window.Swiper && document.querySelector('.heroSwiper')) {
 		new Swiper('.heroSwiper', {
@@ -93,8 +114,9 @@
 		'}'
 	].join('\n');
 
-	var DISSOLVE_COLOR = [0.102, 0.102, 0.102]; /* #1a1a1a, keep in sync with --bg */
+	var DISSOLVE_COLOR = [0.882, 0.882, 0.882]; /* #e1e1e1, Vexium CONFIG.color */
 	var DISSOLVE_SPREAD = 0.5;
+	var DISSOLVE_SPEED = 0.3;
 
 	function compile(gl, type, source) {
 		var shader = gl.createShader(type);
@@ -155,8 +177,8 @@
 
 		function resize() {
 			var ratio = Math.min(window.devicePixelRatio || 1, 2);
-			width = Math.round(window.innerWidth * ratio);
-			height = Math.round(window.innerHeight * ratio);
+			width = Math.round(section.offsetWidth * ratio);
+			height = Math.round(section.offsetHeight * ratio);
 			canvas.width = width;
 			canvas.height = height;
 			gl.viewport(0, 0, width, height);
@@ -173,11 +195,9 @@
 		};
 	}
 
-	var dissolveWrap = document.querySelector('.dissolveWrap');
-	var dissolveSection = document.querySelector('.dissolveSec');
-	var dissolveTitle = document.querySelector('.dissolveTitle');
-	var dissolveClip = document.querySelector('.dissolveClip');
-	var drawDissolve = dissolveWrap ? createDissolve(dissolveWrap) : null;
+	var heroSec = document.querySelector('.heroSec');
+	var drawDissolve = heroSec ? createDissolve(heroSec) : null;
+	var dissolveProgress = 0;
 	/* end braze dissolve */
 
 	/* start split title into words */
@@ -195,6 +215,9 @@
 
 	function updateParallax(viewport) {
 		Array.prototype.forEach.call(parallaxItems, function (item) {
+			if (item.hasAttribute('data-speed')) {
+				return;
+			}
 			var holder = item.parentElement;
 			var extra = item.offsetHeight - holder.offsetHeight;
 			if (extra <= 0) {
@@ -242,26 +265,14 @@
 		});
 	}
 
-	function updateDissolve(viewport) {
-		if (!drawDissolve || !dissolveSection) {
+	function updateDissolve() {
+		if (!drawDissolve || !heroSec) {
 			return;
 		}
-		/* starts the frame the hero leaves the top — same mapping as Vexium */
-		var progress = clamp((window.pageYOffset || window.scrollY || 0) / viewport, 0, 1);
-		drawDissolve(progress * 1.1);
-
-		var wrapBox = dissolveWrap.getBoundingClientRect();
-		var overlayH = clamp(wrapBox.bottom, 0, viewport);
-		if (dissolveClip) {
-			dissolveClip.style.height = overlayH + 'px';
-			dissolveClip.style.visibility = overlayH <= 0 ? 'hidden' : 'visible';
-		}
-
-		if (dissolveTitle) {
-			/* Vexium: half the word sits below the fold, then it rises with the curtain */
-			var rise = 1 - clamp(progress / 0.7, 0, 1);
-			dissolveTitle.style.transform = 'translateY(' + (rise * 48) + '%)';
-		}
+		/* Vexium script-hero1.js: (scroll / (heroH - viewport)) * 0.3, capped at 1.1 */
+		var maxScroll = Math.max(heroSec.offsetHeight - window.innerHeight, 1);
+		dissolveProgress = Math.min((getScroll() / maxScroll) * DISSOLVE_SPEED, 1.1);
+		drawDissolve(dissolveProgress);
 	}
 
 	var ticking = false;
@@ -271,7 +282,7 @@
 		updateParallax(viewport);
 		updateVisionCards(viewport);
 		updateRevealTitles(viewport);
-		updateDissolve(viewport);
+		updateDissolve();
 		ticking = false;
 	}
 
@@ -285,6 +296,9 @@
 	window.addEventListener('scroll', requestUpdate, { passive: true });
 	window.addEventListener('resize', requestUpdate);
 	window.addEventListener('load', requestUpdate);
+	if (window.gsap) {
+		window.gsap.ticker.add(requestUpdate);
+	}
 	update();
 	/* end scroll driven effects */
 
