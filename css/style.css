@@ -64,6 +64,11 @@ a {
 a:hover {
 	color:var(--primary);
 }
+@property --border-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
 p {
 	margin-bottom:0;
 }
@@ -274,7 +279,7 @@ section {
 }
 .navIcon:hover {
 	color: var(--text);
-	background: var(--glass_strong);
+	background: var(--bg);
 }
 
 .mainMenu {
@@ -303,14 +308,11 @@ section {
 }
 .mainMenu > li > a:hover,
 .mainMenu > li:hover > a {
-	color: var(--primary);
+	color: var(--text);
+	background: var(--bg);
 }
 .subArrow {
 	font-size: .65rem;
-	transition: transform .4s cubic-bezier(.3, .8, .3, 1);
-}
-.mainMenu li:hover > a > .subArrow {
-	transform: rotate(180deg);
 }
 
 .subMenu {
@@ -323,19 +325,16 @@ section {
 	margin: 0;
 	padding: 14px 0;
 	list-style: none;
-	border-radius: 0 0 var(--radius1) var(--radius1);
+	border-radius: var(--radius1);
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transform: perspective(300px) rotateX(-18deg);
-	transform-origin: top;
-	transition: all .25s ease-in-out;
+	transition: opacity .2s ease, visibility .2s ease;
 }
 .mainMenu li:hover > .subMenu {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
-	transform: perspective(300px) rotateX(0deg);
 }
 .subMenu > li {
 	position: relative;
@@ -372,29 +371,12 @@ section {
 	right: 100%;
 	left: auto;
 	padding: 14px 0;
-	border-radius: var(--radius1) 0 0 var(--radius1);
+	border-radius: var(--radius1);
 }
 
-/* the glass bar sits on top of the light Braze section as well, so it swaps colors there */
+/* gray dissolve slab: keep white type, switch the glass fill to site black */
 .navOuter.isOnLight .glass::before {
-	background: rgba(26, 26, 26, .05);
-}
-.navOuter.isOnLight .mainMenu > li > a,
-.navOuter.isOnLight .subMenu > li > a,
-.navOuter.isOnLight .navIcon {
-	color: var(--text_dark);
-}
-.navOuter.isOnLight .navIcon:hover {
-	background: rgba(26, 26, 26, .08);
-}
-.navOuter.isOnLight .subMenu > li::before {
-	background: var(--text_dark);
-}
-.navOuter.isOnLight .navLogo .logoLight {
-	display: none;
-}
-.navOuter.isOnLight .navLogo .logoDark {
-	display: block;
+	background: rgba(26, 26, 26, .82);
 }
 /* end header */
 
@@ -670,17 +652,25 @@ section {
 	align-items: center;
 	padding: 0;
 	height: 600px;
+	background: #000;
+	border: 0;
+	isolation: auto;
+	overflow: hidden;
 }
 .consultSec__bg {
 	position: absolute;
-	top: 0;
+	top: -80px;
 	left: 0;
 	z-index: 1;
 	width: 100%;
-	height: 800px;
+	height: calc(100% + 160px);
 	background-position: center center;
 	background-size: cover;
+	background-repeat: no-repeat;
+	background-color: #000;
 	will-change: transform;
+	backface-visibility: hidden;
+	transform: translateZ(0);
 }
 .consultSec > .container {
 	position: relative;
@@ -834,6 +824,444 @@ section {
 	margin: 0;
 }
 /* end footer */
+
+/* start stats */
+.stats-section {
+	padding: 80px 0;
+	background: var(--bg);
+}
+.stats-wrap {
+	padding: 0;
+}
+.stats-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 175px;
+	padding: 28px 18px;
+	background: var(--bg_soft);
+	border: 1px solid var(--glass_border);
+	border-radius: 40px;
+	color: #fff;
+}
+.stat {
+	flex: 1;
+	text-align: center;
+	color: #fff;
+}
+.stat-num {
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 1.1;
+	color: #fff;
+}
+.stat-label {
+	margin-top: 6px;
+	font-size: 19px;
+	font-weight: 300;
+	line-height: 1.4;
+	color: #fff;
+}
+.stat-line {
+	width: 1px;
+	height: 68px;
+	background: rgba(255, 255, 255, .18);
+	flex: none;
+}
+/* end stats */
+
+/* start reviews */
+.reviews-section {
+	padding: 40px 0 0;
+	background: var(--bg);
+}
+.reviews-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+}
+.reviews-side {
+	position: relative;
+	z-index: 0;
+	flex: 0 0 300px;
+	width: 300px;
+	border-radius: 25px;
+	color: #fff;
+	background: transparent;
+}
+.reviews-side::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	border-radius: inherit;
+	background: rgba(26, 26, 26, .72);
+	-webkit-backdrop-filter: blur(18px);
+	backdrop-filter: blur(18px);
+}
+.know-ring {
+	position: absolute;
+	inset: -1px;
+	z-index: 0;
+	border-radius: 26px;
+	background: conic-gradient(from var(--border-angle), transparent 0%, #ff2d78 15%, #ff8c00 35%, #ff2d78 55%, transparent 70%);
+	animation: border-spin 4s linear infinite;
+	pointer-events: none;
+}
+.reviews-side > *:not(.know-ring) {
+	position: relative;
+	z-index: 2;
+}
+.reviews-chip {
+	float: right;
+	position: relative;
+	padding: 15px 20px;
+	background: rgba(255, 255, 255, .1);
+	color: #fff;
+	border-radius: 0 0 0 20px;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: 1.4;
+}
+.chip-corner.is-start::before {
+	content: "";
+	border-top: 30px solid rgba(255, 255, 255, .1);
+	border-left: 30px solid transparent;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin-bottom: -29px;
+}
+.chip-corner.is-start::after {
+	content: "";
+	width: 30px;
+	height: 30px;
+	background: var(--bg);
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	margin-bottom: -30px;
+	border-radius: 0 90px 0 0;
+}
+.chip-corner.is-end::before {
+	content: "";
+	border-top: 32px solid rgba(255, 255, 255, .1);
+	border-left: 32px solid transparent;
+	position: absolute;
+	left: 0;
+	top: 0;
+	margin-left: -30px;
+}
+.chip-corner.is-end::after {
+	content: "";
+	width: 30px;
+	height: 30px;
+	background: var(--bg);
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-left: -30px;
+	border-radius: 0 90px 0 0;
+}
+.reviews-side p {
+	float: right;
+	width: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 30px;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1.9;
+	color: #fff;
+	text-align: justify;
+}
+.review-nav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 3;
+	margin: 20px 0 0 25px;
+	padding: 0;
+}
+.review-arrow {
+	width: 35px;
+	height: 35px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, .16);
+	color: #fff;
+	font-size: 16px;
+	line-height: 1;
+	transition: background .3s ease, color .3s ease;
+}
+.review-arrow .bi::before {
+	vertical-align: 0;
+}
+.review-arrow:hover {
+	background: #fff;
+	color: var(--bg);
+}
+.review-swiper {
+	flex: 1 1 auto;
+	width: calc(100% - 318px) !important;
+	min-width: 0;
+	overflow: visible;
+	clip-path: inset(-24px 0 -420px 0);
+}
+.review-swiper .swiper-wrapper,
+.review-swiper .swiper-slide {
+	height: var(--side-h, 220px) !important;
+	overflow: visible;
+}
+.review-swiper .swiper-slide {
+	position: relative;
+}
+.review-card {
+	position: relative;
+	height: var(--side-h, 220px);
+	display: flex;
+	flex-direction: column;
+	padding: 30px;
+	background: var(--bg_soft);
+	color: #fff;
+	border: 1px solid var(--glass_border);
+	border-radius: var(--radius2);
+	overflow: visible;
+	transition: height .45s ease;
+}
+.review-card:hover {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 5;
+	height: var(--full, 360px);
+}
+.review-card::before {
+	content: "";
+	position: absolute;
+	top: 30px;
+	right: 0;
+	width: 4px;
+	height: 70px;
+	background: var(--primary);
+	border-radius: 90px 0 0 90px;
+	box-shadow: 0 5px 15px var(--primary);
+}
+.review-card h3 {
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.5;
+	color: #fff;
+}
+.review-role {
+	margin-top: 4px;
+	font-size: 12px;
+	font-weight: 400;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, .55);
+}
+.review-text {
+	margin: 20px 0 0;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 25px;
+	text-align: justify;
+	color: rgba(255, 255, 255, .82);
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
+}
+.review-card:hover .review-text {
+	display: block;
+	-webkit-line-clamp: unset;
+	overflow: visible;
+}
+.logo-marquee {
+	position: relative;
+	margin-top: 36px;
+	padding: 8px 0;
+	background: var(--bg);
+	overflow: hidden;
+	direction: ltr;
+}
+.logo-track {
+	display: flex;
+	width: max-content;
+	animation: logo-run 64s linear infinite;
+}
+.logo-set {
+	display: flex;
+	align-items: center;
+	gap: 48px;
+	padding-right: 48px;
+	flex: none;
+}
+.logo-set img {
+	width: 90px;
+	height: 90px;
+	object-fit: contain;
+	flex: none;
+	display: block;
+}
+.logo-marquee::before,
+.logo-marquee::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 140px;
+	z-index: 2;
+	pointer-events: none;
+}
+.logo-marquee::before {
+	right: 0;
+	background: linear-gradient(to left, var(--bg), rgba(26, 26, 26, 0));
+}
+.logo-marquee::after {
+	left: 0;
+	background: linear-gradient(to right, var(--bg), rgba(26, 26, 26, 0));
+}
+@keyframes border-spin {
+	to { --border-angle: 360deg; }
+}
+@keyframes logo-run {
+	from { transform: translate3d(0, 0, 0); }
+	to { transform: translate3d(-50%, 0, 0); }
+}
+/* end reviews */
+
+/* start consult inquiry */
+.consult-section {
+	padding: 48px 0 130px;
+	background: var(--bg);
+}
+.consult-card {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	min-height: 240px;
+	padding: 36px 250px 58px 40px;
+	color: #fff;
+}
+.consult-bg {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background-image: linear-gradient(to left, #ff9342 0%, var(--primary) 100%);
+	-webkit-mask: url("../img/consult-shape.png") center / 100% 100% no-repeat;
+	mask: url("../img/consult-shape.png") center / 100% 100% no-repeat;
+}
+.consult-photo {
+	position: absolute;
+	right: 30px;
+	top: -60px;
+	z-index: 3;
+	height: 300px;
+	width: auto;
+	pointer-events: none;
+}
+.consult-copy,
+.consult-call {
+	position: relative;
+	z-index: 1;
+}
+.consult-copy h2 {
+	font-size: 36px;
+	font-weight: 800;
+	line-height: 1.3;
+	color: #fff;
+}
+.consult-copy p {
+	max-width: 460px;
+	margin: 14px 0 0;
+	font-size: 15px;
+	font-weight: 400;
+	line-height: 1.9;
+	color: #fff;
+}
+.consult-call {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 14px;
+	flex: none;
+}
+.consult-call-label {
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.4;
+	color: #fff;
+}
+.consult-tel {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 32px;
+	font-weight: 800;
+	line-height: 1;
+	color: #fff;
+}
+.consult-tel:hover {
+	color: #fff;
+}
+.consult-wa {
+	--btn-cover: #ff7a1a;
+	color: #fff;
+	border-color: #fff;
+}
+.consult-wa:hover {
+	color: #fff;
+	background: transparent;
+}
+.consult-fab {
+	position: absolute;
+	left: 50%;
+	bottom: -95px;
+	z-index: 4;
+	width: 118px;
+	height: 118px;
+	transform: translateX(-50%);
+	display: block;
+	background: none;
+	line-height: 0;
+}
+.consult-fab svg {
+	display: block;
+	width: 118px;
+	height: 118px;
+}
+.consult-fab:hover {
+	color: inherit;
+}
+@media (max-width: 991px) {
+	.reviews-layout {
+		flex-direction: column;
+	}
+	.reviews-side,
+	.review-swiper {
+		width: 100% !important;
+		flex: none;
+	}
+	.consult-card {
+		padding: 36px 24px 80px;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.consult-photo {
+		position: static;
+		height: 180px;
+		margin: 0 auto;
+	}
+}
+/* end consult inquiry */
 
 /* start colors table */
 .colorsPage {
