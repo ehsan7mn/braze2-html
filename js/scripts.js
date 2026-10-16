@@ -302,24 +302,6 @@
 		navOuter.classList.toggle('isOnLight', onTail || onDissolve);
 	}
 
-	var pinCol = document.querySelector('.productsPin');
-	var pinHead = document.querySelector('.productsHead');
-	function updateProductsSticky() {
-		if (!pinCol || !pinHead) {
-			return;
-		}
-		if (window.innerWidth < 992) {
-			pinHead.style.transform = '';
-			return;
-		}
-		var col = pinCol.getBoundingClientRect();
-		var headH = pinHead.offsetHeight;
-		var topGap = 140;
-		var maxY = Math.max(0, col.height - headH);
-		var y = clamp(topGap - col.top, 0, maxY);
-		pinHead.style.transform = 'translate3d(0,' + Math.round(y) + 'px,0)';
-	}
-
 	var ticking = false;
 
 	function update() {
@@ -329,7 +311,6 @@
 		updateRevealTitles(viewport);
 		updateDissolve();
 		updateNavOnLight();
-		updateProductsSticky();
 		ticking = false;
 	}
 
@@ -347,12 +328,36 @@
 		window.gsap.ticker.add(requestUpdate);
 	}
 	update();
+
+	if (smoother && window.ScrollTrigger && document.querySelector('.productsHead')) {
+		window.ScrollTrigger.matchMedia({
+			'(min-width: 992px)': function () {
+				var pin = window.ScrollTrigger.create({
+					trigger: '.productsHead',
+					start: 'top 140px',
+					endTrigger: '.productsSec',
+					end: 'bottom bottom',
+					pin: true,
+					pinSpacing: false,
+					anticipatePin: 0,
+					invalidateOnRefresh: true
+				});
+				window.ScrollTrigger.refresh();
+				return function () {
+					pin.kill();
+				};
+			}
+		});
+		window.addEventListener('load', function () {
+			window.ScrollTrigger.refresh();
+		});
+	}
 	/* end scroll driven effects */
 
 	/* start reviews swiper */
 	if (window.Swiper && document.querySelector('.review-swiper')) {
 		new Swiper('.review-swiper', {
-			slidesPerView: 3,
+			slidesPerView: 2,
 			spaceBetween: 16,
 			loop: true,
 			watchOverflow: true,
@@ -367,8 +372,7 @@
 			},
 			breakpoints: {
 				0: { slidesPerView: 1 },
-				768: { slidesPerView: 2 },
-				1200: { slidesPerView: 3 }
+				768: { slidesPerView: 2 }
 			}
 		});
 	}

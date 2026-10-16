@@ -353,7 +353,7 @@ section {
 }
 .mainMenu > li > a:hover,
 .mainMenu > li:hover > a {
-	color: var(--bg);
+	color: var(--primary);
 	background: transparent;
 }
 .subArrow {
@@ -421,7 +421,7 @@ section {
 	color: var(--text);
 }
 .subMenu > li:hover > a {
-	color: var(--bg);
+	color: var(--primary);
 }
 .subMenu .subMenu {
 	top: 0;
@@ -434,7 +434,7 @@ section {
 
 /* gray dissolve slab: black glass on the bar only, submenu stays white frost */
 .navOuter.isOnLight .mainNav.glass::before {
-	background: rgba(26, 26, 26, .92);
+	background: rgba(26, 26, 26, .6);
 }
 .navOuter.isOnLight .mainMenu > li > a:hover,
 .navOuter.isOnLight .mainMenu > li:hover > a,
@@ -632,7 +632,7 @@ section {
 }
 @media (min-width: 992px) {
 	.productsPin {
-		align-self: stretch;
+		align-self: flex-start;
 	}
 }
 .productsHead {
@@ -749,26 +749,23 @@ a.titleLink:hover {
 	display: flex;
 	align-items: center;
 	padding: 0;
-	height: 800px;
+	height: 500px;
 	background: var(--bg);
 	border: 0;
 	outline: 0;
-	isolation: auto;
+	isolation: isolate;
 	overflow: hidden;
 }
 .consultSec__bg {
 	position: absolute;
-	top: -20%;
+	top: 0;
 	left: 0;
 	z-index: 1;
 	width: 100%;
-	height: 140%;
+	height: 800px;
 	background-position: center center;
 	background-size: cover;
 	background-repeat: no-repeat;
-	background-color: var(--bg);
-	backface-visibility: hidden;
-	-webkit-backface-visibility: hidden;
 }
 .consultSec__bg::after {
 	content: "";
@@ -776,10 +773,6 @@ a.titleLink:hover {
 	inset: 0;
 	background: var(--cover);
 	pointer-events: none;
-}
-.consultSec .lightBlock {
-	mix-blend-mode: soft-light;
-	clip-path: inset(12px 0);
 }
 .consultSec > .container {
 	position: relative;
@@ -802,11 +795,11 @@ a.titleLink:hover {
 
 /* start blog */
 .blogSec {
-	padding: 0 0 100px;
+	padding: 100px 0;
 	background: var(--bg);
 }
 .blogSec__title {
-	margin-bottom: 60px;
+	margin-bottom: 30px;
 	font-size: 40px;
 	line-height: 1.6;
 	text-align: center;
@@ -894,11 +887,11 @@ a.titleLink:hover {
 }
 .footerBox__bg {
 	position: absolute;
-	top: -20%;
+	top: 0;
 	left: 0;
 	z-index: 0;
 	width: 100%;
-	height: 140%;
+	height: calc(100% + 300px);
 	background-position: center center;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -1181,6 +1174,7 @@ a.footerSocial__btn:hover i::before {
 	border: 0;
 	border-radius: 40px;
 	color: #fff;
+	box-shadow: 0 32px 48px -12px rgba(255, 102, 0, .35);
 }
 .stat {
 	flex: 1;
@@ -1267,10 +1261,9 @@ a.footerSocial__btn:hover i::before {
 	padding: 16px 16px 0 16px;
 }
 .reviews-chip {
-	padding: 8px 14px;
-	background: rgba(255, 255, 255, .1);
+	padding: 0;
+	background: none;
 	color: #fff;
-	border-radius: var(--radius1);
 	font-size: 16px;
 	font-weight: 500;
 	line-height: 1.4;
@@ -1309,6 +1302,12 @@ a.footerSocial__btn:hover i::before {
 	line-height: 1;
 	transition: background .3s ease, color .3s ease;
 }
+.review-arrow .bi {
+	position: relative;
+	top: 3px;
+	display: block;
+	line-height: 1;
+}
 .review-arrow .bi::before {
 	vertical-align: 0;
 }
@@ -1336,7 +1335,7 @@ a.footerSocial__btn:hover i::before {
 	height: var(--side-h, 220px);
 	display: flex;
 	flex-direction: column;
-	padding: 30px;
+	padding: 30px 30px 50px;
 	background: var(--bg_soft);
 	color: #fff;
 	border: 1px solid var(--glass_border);
@@ -1404,7 +1403,6 @@ a.footerSocial__btn:hover i::before {
 	gap: 48px;
 	padding-right: 48px;
 	flex: none;
-	background: var(--bg);
 }
 .logo-set img {
 	width: 90px;
@@ -1412,7 +1410,6 @@ a.footerSocial__btn:hover i::before {
 	object-fit: contain;
 	flex: none;
 	display: block;
-	mix-blend-mode: multiply;
 }
 .logo-marquee::before,
 .logo-marquee::after {
