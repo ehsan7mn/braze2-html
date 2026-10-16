@@ -288,6 +288,38 @@
 		drawDissolve(dissolveProgress);
 	}
 
+	var navOuter = document.querySelector('.navOuter');
+	function updateNavOnLight() {
+		if (!navOuter || !heroSec) {
+			return;
+		}
+		var navBox = navOuter.getBoundingClientRect();
+		var heroBox = heroSec.getBoundingClientRect();
+		var grayBandTop = heroBox.bottom - 140;
+		var onTail = navBox.bottom > grayBandTop && navBox.top < heroBox.bottom + 8;
+		var grayFromDissolve = heroBox.bottom - clamp(dissolveProgress * 1.2, 0, 1) * heroBox.height;
+		var onDissolve = navBox.bottom > grayFromDissolve && navBox.top < heroBox.bottom;
+		navOuter.classList.toggle('isOnLight', onTail || onDissolve);
+	}
+
+	var pinCol = document.querySelector('.productsPin');
+	var pinHead = document.querySelector('.productsHead');
+	function updateProductsSticky() {
+		if (!pinCol || !pinHead) {
+			return;
+		}
+		if (window.innerWidth < 992) {
+			pinHead.style.transform = '';
+			return;
+		}
+		var col = pinCol.getBoundingClientRect();
+		var headH = pinHead.offsetHeight;
+		var topGap = 140;
+		var maxY = Math.max(0, col.height - headH);
+		var y = clamp(topGap - col.top, 0, maxY);
+		pinHead.style.transform = 'translate3d(0,' + Math.round(y) + 'px,0)';
+	}
+
 	var ticking = false;
 
 	function update() {
@@ -296,6 +328,8 @@
 		updateVisionCards(viewport);
 		updateRevealTitles(viewport);
 		updateDissolve();
+		updateNavOnLight();
+		updateProductsSticky();
 		ticking = false;
 	}
 
@@ -313,31 +347,6 @@
 		window.gsap.ticker.add(requestUpdate);
 	}
 	update();
-
-	if (smoother && window.ScrollTrigger && document.querySelector('.productsHead')) {
-		window.ScrollTrigger.matchMedia({
-			'(min-width: 992px)': function () {
-				var pin = window.ScrollTrigger.create({
-					trigger: '.productsHead',
-					start: 'top 140px',
-					endTrigger: '.productsSec',
-					end: 'bottom bottom',
-					pin: true,
-					pinSpacing: false,
-					pinType: 'transform',
-					anticipatePin: 1,
-					invalidateOnRefresh: true
-				});
-				window.ScrollTrigger.refresh();
-				return function () {
-					pin.kill();
-				};
-			}
-		});
-		window.addEventListener('load', function () {
-			window.ScrollTrigger.refresh();
-		});
-	}
 	/* end scroll driven effects */
 
 	/* start reviews swiper */
@@ -372,18 +381,9 @@
 		reviewsLayout.style.setProperty('--side-h', reviewsSide.offsetHeight + 'px');
 	}
 	Array.prototype.forEach.call(document.querySelectorAll('.review-card'), function (card) {
-		var text = card.querySelector('.review-text');
-		if (text) {
-			text.style.display = 'block';
-			text.style.webkitLineClamp = 'unset';
-		}
 		card.style.height = 'auto';
 		card.style.setProperty('--full', card.scrollHeight + 'px');
 		card.style.height = '';
-		if (text) {
-			text.style.display = '';
-			text.style.webkitLineClamp = '';
-		}
 	});
 	syncReviewHeight();
 	window.addEventListener('resize', syncReviewHeight);
