@@ -872,7 +872,7 @@ section {
 
 /* start reviews */
 .reviews-section {
-	padding: 40px 0 0;
+	padding: 80px 0 0;
 	background: var(--bg);
 }
 .reviews-layout {
@@ -895,15 +895,15 @@ section {
 	inset: 0;
 	z-index: 1;
 	border-radius: inherit;
-	background: rgba(26, 26, 26, .72);
+	background: rgba(26, 26, 26, .94);
 	-webkit-backdrop-filter: blur(18px);
 	backdrop-filter: blur(18px);
 }
 .know-ring {
 	position: absolute;
-	inset: -1px;
+	inset: -2px;
 	z-index: 0;
-	border-radius: 26px;
+	border-radius: 27px;
 	background: conic-gradient(from var(--border-angle), transparent 0%, #ff2d78 15%, #ff8c00 35%, #ff2d78 55%, transparent 70%);
 	animation: border-spin 4s linear infinite;
 	pointer-events: none;
