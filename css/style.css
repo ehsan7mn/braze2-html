@@ -686,23 +686,6 @@ section {
 	-webkit-backface-visibility: hidden;
 	transform: translate3d(0, 0, 0);
 }
-.consultSec::before,
-.consultSec::after {
-	content: "";
-	position: absolute;
-	left: 0;
-	right: 0;
-	height: 3px;
-	z-index: 8;
-	pointer-events: none;
-	background: var(--bg);
-}
-.consultSec::before {
-	top: -1px;
-}
-.consultSec::after {
-	bottom: -1px;
-}
 .consultSec .lightBlock {
 	mix-blend-mode: soft-light;
 }
