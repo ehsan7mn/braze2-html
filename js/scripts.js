@@ -311,6 +311,7 @@
 		updateRevealTitles(viewport);
 		updateDissolve();
 		updateNavOnLight();
+		updateProductsPin();
 		ticking = false;
 	}
 
@@ -329,29 +330,91 @@
 	}
 	update();
 
-	if (smoother && window.ScrollTrigger && document.querySelector('.productsHead')) {
-		window.ScrollTrigger.matchMedia({
-			'(min-width: 992px)': function () {
-				var pin = window.ScrollTrigger.create({
-					trigger: '.productsHead',
-					start: 'top 140px',
-					endTrigger: '.productsSec',
-					end: 'bottom bottom',
-					pin: true,
-					pinSpacing: false,
-					anticipatePin: 0,
-					invalidateOnRefresh: true
-				});
-				window.ScrollTrigger.refresh();
-				return function () {
-					pin.kill();
-				};
-			}
-		});
-		window.addEventListener('load', function () {
-			window.ScrollTrigger.refresh();
-		});
+	/* pin the products title to the viewport — never write a translating y on it.
+	   ScrollTrigger pin uses translate3d(0, Npx, 0) which fights ScrollSmoother and jumps 2–3px. */
+	var productsHead = document.querySelector('.productsHead');
+	var productsPinCol = document.querySelector('.productsPin');
+	var productsSec = document.querySelector('.productsSec');
+	var productsPinState = 'flow';
+
+	function resetProductsHead() {
+		if (!productsHead || !productsPinCol) {
+			return;
+		}
+		if (productsHead.parentElement !== productsPinCol) {
+			productsPinCol.insertBefore(productsHead, productsPinCol.firstChild);
+		}
+		productsHead.style.position = '';
+		productsHead.style.top = '';
+		productsHead.style.bottom = '';
+		productsHead.style.left = '';
+		productsHead.style.right = '';
+		productsHead.style.width = '';
+		productsHead.style.zIndex = '';
+		productsHead.style.transform = '';
+		productsHead.style.margin = '';
 	}
+
+	function updateProductsPin() {
+		if (!productsHead || !productsPinCol || !productsSec) {
+			return;
+		}
+		if (window.innerWidth < 992) {
+			if (productsPinState !== 'flow') {
+				resetProductsHead();
+				productsPinState = 'flow';
+			}
+			return;
+		}
+		var pinTop = 140;
+		var headH = productsHead.offsetHeight;
+		var colRect = productsPinCol.getBoundingClientRect();
+		var secRect = productsSec.getBoundingClientRect();
+		var next;
+		if (colRect.top > pinTop) {
+			next = 'flow';
+		} else if (secRect.bottom <= pinTop + headH + 8) {
+			next = 'end';
+		} else {
+			next = 'pin';
+		}
+		if (next === 'flow') {
+			if (productsPinState !== 'flow') {
+				resetProductsHead();
+				productsPinState = 'flow';
+			}
+			return;
+		}
+		if (next === 'end') {
+			if (productsPinState !== 'end') {
+				resetProductsHead();
+				productsHead.style.position = 'absolute';
+				productsHead.style.top = 'auto';
+				productsHead.style.bottom = '0';
+				productsHead.style.left = '0';
+				productsHead.style.right = '0';
+				productsHead.style.width = 'auto';
+				productsHead.style.transform = 'none';
+				productsPinState = 'end';
+			}
+			return;
+		}
+		var width = Math.round(colRect.width);
+		var left = Math.round(colRect.left);
+		if (productsHead.parentElement !== document.body) {
+			document.body.appendChild(productsHead);
+		}
+		productsHead.style.position = 'fixed';
+		productsHead.style.top = pinTop + 'px';
+		productsHead.style.bottom = 'auto';
+		productsHead.style.left = left + 'px';
+		productsHead.style.right = 'auto';
+		productsHead.style.width = width + 'px';
+		productsHead.style.zIndex = '5';
+		productsHead.style.transform = 'none';
+		productsPinState = 'pin';
+	}
+	updateProductsPin();
 	/* end scroll driven effects */
 
 	/* start reviews swiper */
