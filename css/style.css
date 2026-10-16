@@ -329,7 +329,13 @@ section {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
+	transform: none;
 	transition: opacity .2s ease, visibility .2s ease;
+}
+.subMenu.glass::before {
+	background: rgba(26, 26, 26, .94);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
 }
 .mainMenu li:hover > .subMenu {
 	opacity: 1;
@@ -377,6 +383,11 @@ section {
 /* gray dissolve slab: keep white type, switch the glass fill to site black */
 .navOuter.isOnLight .glass::before {
 	background: rgba(26, 26, 26, .82);
+}
+.navOuter.isOnLight .subMenu.glass::before {
+	background: rgba(26, 26, 26, .94);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
 }
 /* end header */
 
@@ -646,31 +657,54 @@ section {
 /* end products */
 
 /* start consult parallax */
-.consultSec {
+.consultSec,
+.consultSec.lightArea {
 	position: relative;
 	display: flex;
 	align-items: center;
 	padding: 0;
 	height: 600px;
-	background: #000;
+	background: var(--bg);
 	border: 0;
+	outline: 0;
 	isolation: auto;
 	overflow: hidden;
+	transform: translateZ(0);
 }
 .consultSec__bg {
 	position: absolute;
-	top: -80px;
+	top: -120px;
 	left: 0;
 	z-index: 1;
 	width: 100%;
-	height: calc(100% + 160px);
+	height: calc(100% + 240px);
 	background-position: center center;
 	background-size: cover;
 	background-repeat: no-repeat;
-	background-color: #000;
-	will-change: transform;
+	background-color: var(--bg);
 	backface-visibility: hidden;
-	transform: translateZ(0);
+	-webkit-backface-visibility: hidden;
+	transform: translate3d(0, 0, 0);
+}
+.consultSec::before,
+.consultSec::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	height: 3px;
+	z-index: 8;
+	pointer-events: none;
+	background: var(--bg);
+}
+.consultSec::before {
+	top: -1px;
+}
+.consultSec::after {
+	bottom: -1px;
+}
+.consultSec .lightBlock {
+	mix-blend-mode: soft-light;
 }
 .consultSec > .container {
 	position: relative;
@@ -883,11 +917,13 @@ section {
 .reviews-side {
 	position: relative;
 	z-index: 0;
+	isolation: isolate;
 	flex: 0 0 300px;
 	width: 300px;
 	border-radius: 25px;
 	color: #fff;
 	background: transparent;
+	overflow: hidden;
 }
 .reviews-side::before {
 	content: "";
@@ -895,18 +931,29 @@ section {
 	inset: 0;
 	z-index: 1;
 	border-radius: inherit;
-	background: rgba(26, 26, 26, .94);
+	background: linear-gradient(145deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
 	-webkit-backdrop-filter: blur(18px);
 	backdrop-filter: blur(18px);
 }
+.reviews-side::after {
+	content: "";
+	display: block;
+	clear: both;
+}
 .know-ring {
 	position: absolute;
-	inset: -2px;
-	z-index: 0;
-	border-radius: 27px;
+	inset: 0;
+	z-index: 3;
+	box-sizing: border-box;
+	padding: 1px;
+	border-radius: inherit;
 	background: conic-gradient(from var(--border-angle), transparent 0%, #ff2d78 15%, #ff8c00 35%, #ff2d78 55%, transparent 70%);
 	animation: border-spin 4s linear infinite;
 	pointer-events: none;
+	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+	-webkit-mask-composite: xor;
+	mask-composite: exclude;
 }
 .reviews-side > *:not(.know-ring) {
 	position: relative;
@@ -1220,6 +1267,10 @@ section {
 .consult-wa:hover {
 	color: #fff;
 	background: transparent;
+}
+.consult-wa:hover::before,
+.consult-wa:hover::after {
+	background: var(--btn-cover);
 }
 .consult-fab {
 	position: absolute;
