@@ -1404,6 +1404,7 @@ a.footerSocial__btn:hover i::before {
 	gap: 48px;
 	padding-right: 48px;
 	flex: none;
+	background: var(--bg);
 }
 .logo-set img {
 	width: 90px;
@@ -1411,7 +1412,6 @@ a.footerSocial__btn:hover i::before {
 	object-fit: contain;
 	flex: none;
 	display: block;
-	background: #fff;
 	mix-blend-mode: multiply;
 }
 .logo-marquee::before,
@@ -1522,7 +1522,7 @@ a.footerSocial__btn:hover i::before {
 }
 .consult-wa:hover {
 	color: #fff;
-	background: transparent;
+	background-color: transparent;
 	--btn-frame: 120px;
 }
 .consult-fab {
