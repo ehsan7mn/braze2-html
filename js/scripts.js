@@ -12,7 +12,8 @@
 		window.ScrollTrigger.normalizeScroll(false);
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
-			effects: true
+			effects: true,
+			smoothTouch: 0.1
 		});
 	}
 
@@ -502,6 +503,18 @@
 	var visionCards = document.querySelectorAll('[data-vision-card]');
 	var revealTitles = document.querySelectorAll('.revealWords');
 
+	function parallaxProgress(holder, viewport) {
+		var scroll = getScroll();
+		var top = 0;
+		var node = holder;
+		while (node) {
+			top += node.offsetTop || 0;
+			node = node.offsetParent;
+		}
+		var height = holder.offsetHeight;
+		return clamp((scroll + viewport - top) / (viewport + height), 0, 1);
+	}
+
 	function updateParallax(viewport) {
 		Array.prototype.forEach.call(parallaxItems, function (item) {
 			var holder = item.parentElement;
@@ -509,13 +522,16 @@
 			if (extra <= 0) {
 				return;
 			}
-			var box = holder.getBoundingClientRect();
-			var progress = clamp((viewport - box.top) / (viewport + box.height), 0, 1);
-			var shift = extra * (1 - progress);
+			var progress = parallaxProgress(holder, viewport);
+			var y;
 			if (holder.closest('.footerBox--lg')) {
-				shift = -shift;
+				y = -extra * progress;
+			} else if (holder.closest('.footerBox')) {
+				y = -extra * (1 - progress);
+			} else {
+				y = -extra * (1 - progress);
 			}
-			item.style.transform = 'translate3d(0, ' + (-shift).toFixed(2) + 'px, 0)';
+			item.style.transform = 'translate3d(0,' + Math.round(y) + 'px,0)';
 		});
 	}
 
@@ -596,8 +612,22 @@
 		}
 	}
 
+	function syncProductsPinHeight() {
+		if (!productsPin || !productsList || window.innerWidth < 992) {
+			if (productsPin) {
+				productsPin.style.minHeight = '';
+			}
+			return;
+		}
+		var listH = productsList.offsetHeight;
+		if (listH) {
+			productsPin.style.minHeight = listH + 'px';
+		}
+	}
+
 	function initProductsPin() {
 		clearProductsPinTrigger();
+		syncProductsPinHeight();
 		if (!productsPin || !productsHead || !productsList || !window.ScrollTrigger) {
 			return;
 		}
@@ -607,10 +637,11 @@
 		productsPinTrigger = window.ScrollTrigger.create({
 			trigger: productsPin,
 			start: 'top 140px',
-			endTrigger: productsPin,
+			endTrigger: productsList,
 			end: 'bottom bottom',
 			pin: productsHead,
 			pinSpacing: false,
+			anticipatePin: 1,
 			invalidateOnRefresh: true
 		});
 	}
@@ -632,8 +663,11 @@
 		}
 	}
 
-	window.addEventListener('scroll', requestUpdate, { passive: true });
+	if (!smoother) {
+		window.addEventListener('scroll', requestUpdate, { passive: true });
+	}
 	window.addEventListener('resize', function () {
+		syncProductsPinHeight();
 		initProductsPin();
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
@@ -641,6 +675,7 @@
 		requestUpdate();
 	});
 	window.addEventListener('load', function () {
+		syncProductsPinHeight();
 		initProductsPin();
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
@@ -649,6 +684,9 @@
 	});
 	if (window.gsap) {
 		window.gsap.ticker.add(requestUpdate);
+	}
+	if (smoother && window.ScrollTrigger) {
+		window.ScrollTrigger.addEventListener('refresh', requestUpdate);
 	}
 	initProductsPin();
 	update();
