@@ -636,7 +636,6 @@
 	var ticking = false;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
-	productsHeadRef = productsHead;
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var productsPinTrigger = null;
 
@@ -673,7 +672,6 @@
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
-			productsPinTriggerRef = null;
 		}
 		unlockProductsHeadWidth();
 		if (productsPin) {
@@ -726,13 +724,15 @@
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
-		productsPinTriggerRef = productsPinTrigger;
 	}
 
 	function refreshScrollLayout() {
 		syncProductsPinHeight();
 		initProductsPin();
 		initParallaxTriggers();
+		if (smoother && typeof smoother.effects === 'function') {
+			smoother.effects();
+		}
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
 		}
