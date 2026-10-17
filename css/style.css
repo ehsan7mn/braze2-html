@@ -754,9 +754,9 @@ section {
 	left: 0;
 	width: 100%;
 	height: 850px;
-	background-position: center center;
+	background-position: center 0%;
 	background-size: cover;
-	will-change: transform;
+	will-change: background-position;
 }
 .productItem__tags {
 	position: absolute;

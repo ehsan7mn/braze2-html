@@ -708,7 +708,11 @@
 			invalidateOnRefresh: true,
 			onEnter: lockProductsHeadWidth,
 			onEnterBack: lockProductsHeadWidth,
-			onRefresh: lockProductsHeadWidth,
+			onRefresh: function (self) {
+				if (self.isActive) {
+					lockProductsHeadWidth();
+				}
+			},
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
