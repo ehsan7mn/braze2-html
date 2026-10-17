@@ -1334,6 +1334,7 @@ a.footerSocial__btn:hover i::before {
 	display: flex;
 	align-items: flex-start;
 	gap: 18px;
+	transform: translateZ(0);
 }
 .reviews-side {
 	position: relative;

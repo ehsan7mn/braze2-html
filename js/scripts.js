@@ -40,6 +40,16 @@
 		return window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
 	}
 
+	function offsetTopInPage(el) {
+		var top = 0;
+		var node = el;
+		while (node) {
+			top += node.offsetTop || 0;
+			node = node.offsetParent;
+		}
+		return top;
+	}
+
 	/* start hero slider — glitch from braze1-html */
 	function initHeroGlitch(swiper) {
 		var canvas = document.getElementById('heroGlitch');
@@ -545,7 +555,7 @@
 			if (extra <= 0) {
 				return;
 			}
-			var triggerEl = holder.closest('.consultSec') || holder;
+			var triggerEl = holder;
 			var fromY = -extra;
 			var toY = 0;
 			if (holder.closest('.footerBox--lg')) {
@@ -575,13 +585,14 @@
 	}
 
 	function updateVisionCards(viewport) {
+		var scroll = getScroll();
 		Array.prototype.forEach.call(visionCards, function (card) {
 			var side = card.getAttribute('data-vision-card');
 			if (side === 'center') {
 				return;
 			}
-			var box = card.getBoundingClientRect();
-			var progress = clamp((viewport * 0.85 - box.top) / (viewport * 0.6), 0, 1);
+			var top = offsetTopInPage(card);
+			var progress = clamp((scroll + viewport * 0.85 - top) / (viewport * 0.6), 0, 1);
 			var rest = 1 - progress;
 			/* the two outer cards start stacked on the middle one and fan out while scrolling */
 			var shift = side === 'left' ? 100 : -100;
@@ -591,10 +602,11 @@
 	}
 
 	function updateRevealTitles(viewport) {
+		var scroll = getScroll();
 		Array.prototype.forEach.call(revealTitles, function (title) {
 			var words = title.querySelectorAll('.word');
-			var box = title.getBoundingClientRect();
-			var progress = clamp((viewport * 0.6 - box.top) / (viewport * 0.2), 0, 1);
+			var top = offsetTopInPage(title);
+			var progress = clamp((scroll + viewport * 0.6 - top) / (viewport * 0.2), 0, 1);
 			var total = words.length;
 			Array.prototype.forEach.call(words, function (word, index) {
 				var start = index / total;
@@ -767,9 +779,7 @@
 		window.setTimeout(refreshScrollLayout, 600);
 		requestUpdate();
 	});
-	if (smoother && window.ScrollTrigger) {
-		window.ScrollTrigger.addEventListener('update', requestUpdate);
-	} else if (window.gsap) {
+	if (window.gsap) {
 		window.gsap.ticker.add(requestUpdate);
 	}
 	refreshScrollLayout();
