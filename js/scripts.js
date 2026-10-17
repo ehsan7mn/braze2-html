@@ -12,9 +12,10 @@
 		window.ScrollTrigger.normalizeScroll(false);
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
-			effects: true,
+			effects: false,
 			smoothTouch: 0.1
 		});
+		window.gsap.ticker.lagSmoothing(0);
 	}
 
 	function getScroll() {
@@ -500,38 +501,59 @@
 
 	/* start scroll driven effects */
 	var parallaxItems = document.querySelectorAll('[data-parallax]');
+	var parallaxScrollTriggers = [];
 	var visionCards = document.querySelectorAll('[data-vision-card]');
 	var revealTitles = document.querySelectorAll('.revealWords');
 
-	function parallaxProgress(holder, viewport) {
-		var scroll = getScroll();
-		var top = 0;
-		var node = holder;
-		while (node) {
-			top += node.offsetTop || 0;
-			node = node.offsetParent;
+	function clearParallaxTriggers() {
+		while (parallaxScrollTriggers.length) {
+			parallaxScrollTriggers.pop().kill();
 		}
-		var height = holder.offsetHeight;
-		return clamp((scroll + viewport - top) / (viewport + height), 0, 1);
+		Array.prototype.forEach.call(parallaxItems, function (item) {
+			if (window.gsap) {
+				window.gsap.set(item, { clearProps: 'transform' });
+			}
+		});
 	}
 
-	function updateParallax(viewport) {
+	function initParallaxTriggers() {
+		clearParallaxTriggers();
+		if (!window.gsap || !window.ScrollTrigger) {
+			return;
+		}
 		Array.prototype.forEach.call(parallaxItems, function (item) {
 			var holder = item.parentElement;
+			if (!holder) {
+				return;
+			}
 			var extra = item.offsetHeight - holder.offsetHeight;
 			if (extra <= 0) {
 				return;
 			}
-			var progress = parallaxProgress(holder, viewport);
-			var y;
+			var fromY = -extra;
+			var toY = 0;
 			if (holder.closest('.footerBox--lg')) {
-				y = -extra * progress;
-			} else if (holder.closest('.footerBox')) {
-				y = -extra * (1 - progress);
-			} else {
-				y = -extra * (1 - progress);
+				fromY = 0;
+				toY = -extra;
 			}
-			item.style.transform = 'translate3d(0,' + Math.round(y) + 'px,0)';
+			var tween = window.gsap.fromTo(
+				item,
+				{ y: fromY, force3D: true },
+				{
+					y: toY,
+					ease: 'none',
+					scrollTrigger: {
+						trigger: holder,
+						start: 'top bottom',
+						end: 'bottom top',
+						scrub: true,
+						invalidateOnRefresh: true
+					}
+				}
+			);
+			if (tween.scrollTrigger) {
+				parallaxScrollTriggers.push(tween.scrollTrigger);
+			}
 		});
 	}
 
@@ -610,6 +632,10 @@
 			productsHead.style.width = '';
 			productsHead.style.maxWidth = '';
 		}
+		if (productsPin) {
+			productsPin.style.width = '';
+			productsPin.style.maxWidth = '';
+		}
 	}
 
 	function syncProductsPinHeight() {
@@ -637,18 +663,28 @@
 		productsPinTrigger = window.ScrollTrigger.create({
 			trigger: productsPin,
 			start: 'top 140px',
-			endTrigger: productsList,
+			endTrigger: productsPin,
 			end: 'bottom bottom',
 			pin: productsHead,
 			pinSpacing: false,
+			pinReparent: true,
+			pinType: 'fixed',
 			anticipatePin: 1,
 			invalidateOnRefresh: true
 		});
 	}
 
+	function refreshScrollLayout() {
+		syncProductsPinHeight();
+		initProductsPin();
+		initParallaxTriggers();
+		if (window.ScrollTrigger) {
+			window.ScrollTrigger.refresh();
+		}
+	}
+
 	function update() {
 		var viewport = window.innerHeight;
-		updateParallax(viewport);
 		updateVisionCards(viewport);
 		updateRevealTitles(viewport);
 		updateDissolve();
@@ -667,28 +703,19 @@
 		window.addEventListener('scroll', requestUpdate, { passive: true });
 	}
 	window.addEventListener('resize', function () {
-		syncProductsPinHeight();
-		initProductsPin();
-		if (window.ScrollTrigger) {
-			window.ScrollTrigger.refresh();
-		}
+		refreshScrollLayout();
 		requestUpdate();
 	});
 	window.addEventListener('load', function () {
-		syncProductsPinHeight();
-		initProductsPin();
-		if (window.ScrollTrigger) {
-			window.ScrollTrigger.refresh();
-		}
+		refreshScrollLayout();
+		window.setTimeout(refreshScrollLayout, 150);
+		window.setTimeout(refreshScrollLayout, 600);
 		requestUpdate();
 	});
 	if (window.gsap) {
 		window.gsap.ticker.add(requestUpdate);
 	}
-	if (smoother && window.ScrollTrigger) {
-		window.ScrollTrigger.addEventListener('refresh', requestUpdate);
-	}
-	initProductsPin();
+	refreshScrollLayout();
 	update();
 	/* end scroll driven effects */
 
