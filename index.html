@@ -71,9 +71,6 @@
 <div class="blurDiv"></div>
 <!-- end header -->
 
-<div id="smooth-wrapper">
-<div id="smooth-content">
-
 <!-- start hero + braze dissolve -->
 <section class="heroSec lightArea">
 	<canvas class="heroGlitch" id="heroGlitch" aria-hidden="true"></canvas>
@@ -90,13 +87,13 @@
 			</div>
 		</div>
 	</div>
-	<button class="heroArrow heroArrow--prev" type="button" aria-label="اسلاید قبلی"><i class="bi bi-arrow-right"></i></button>
-	<button class="heroArrow heroArrow--next" type="button" aria-label="اسلاید بعدی"><i class="bi bi-arrow-left"></i></button>
 	<div class="blackCover"></div>
 	<div class="lightBlock lightBlock_active"></div>
 	<canvas class="dissolveCanvas"></canvas>
 	<div class="dissolveFallback"></div>
 	<h2 class="dissolveTitle">Braze</h2>
+	<button class="heroArrow heroArrow--prev" type="button" aria-label="اسلاید قبلی"><i class="bi bi-arrow-right"></i></button>
+	<button class="heroArrow heroArrow--next" type="button" aria-label="اسلاید بعدی"><i class="bi bi-arrow-left"></i></button>
 </section>
 <!-- end hero + braze dissolve -->
 
@@ -212,7 +209,7 @@
 			<div class="col-lg-7">
 				<div class="productItem">
 					<div class="productItem__media">
-						<div class="productItem__img" data-speed="0.5" data-lag="0"
+						<div class="productItem__img" data-parallax
 							style="background-image:url('img/product-sq1.jpg')"></div>
 						<div class="productItem__tags">
 							<a href="#">باتری یو پی اس</a>
@@ -226,7 +223,7 @@
 
 				<div class="productItem">
 					<div class="productItem__media">
-						<div class="productItem__img" data-speed="0.5" data-lag="0"
+						<div class="productItem__img" data-parallax
 							style="background-image:url('img/product-sq2.jpg')"></div>
 						<div class="productItem__tags">
 							<a href="#">باتری یو پی اس</a>
@@ -240,7 +237,7 @@
 
 				<div class="productItem">
 					<div class="productItem__media">
-						<div class="productItem__img" data-speed="0.5" data-lag="0"
+						<div class="productItem__img" data-parallax
 							style="background-image:url('img/product-sq1.jpg')"></div>
 						<div class="productItem__tags">
 							<a href="#">باتری یو پی اس</a>
@@ -254,7 +251,7 @@
 
 				<div class="productItem">
 					<div class="productItem__media">
-						<div class="productItem__img" data-speed="0.5" data-lag="0"
+						<div class="productItem__img" data-parallax
 							style="background-image:url('img/product-sq2.jpg')"></div>
 						<div class="productItem__tags">
 							<a href="#">باتری یو پی اس</a>
@@ -572,13 +569,7 @@
 </footer>
 <!-- end footer -->
 
-</div>
-</div>
-
 <script src="js/gsap.min.js"></script>
-<script src="js/ScrollTrigger.min.js"></script>
-<script src="js/ScrollSmoother.min.js"></script>
-<script src="js/sticky-sidebar.min.js"></script>
 <script src="js/swiper-bundle.min.js"></script>
 <script src="js/aos.js"></script>
 <script src="js/scripts.js"></script>
