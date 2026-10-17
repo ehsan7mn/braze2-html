@@ -172,16 +172,16 @@ section {
 .lightBlock {
 	position: absolute;
 	pointer-events: none;
-	top: -180px;
-	left: -180px;
+	top: -100px;
+	left: -100px;
 	display: block;
-	width: 359px;
-	height: 359px;
+	width: 150px;
+	height: 150px;
 	background-color: #fff;
 	border-radius: 50%;
 	mix-blend-mode: overlay;
-	-webkit-filter: blur(141px);
-	filter: blur(141px);
+	-webkit-filter: blur(50px);
+	filter: blur(50px);
 	z-index: 6;
 	-webkit-transform: matrix(1, 0, 0, 1, -100, -100);
 	transform: matrix(1, 0, 0, 1, -100, -100);
@@ -1708,6 +1708,7 @@ a.footerSocial__btn:hover i::before {
 	border-radius: 50%;
 	mix-blend-mode: difference;
 	transform: translate(-50%, -50%);
+	opacity: 0;
 	transition: transform .3s ease, opacity .4s ease;
 }
 .cursor-active {
