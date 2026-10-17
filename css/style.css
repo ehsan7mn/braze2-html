@@ -211,11 +211,11 @@ section {
    Covers in the pen are #eee because the pen page is #eee; a solid cover
    here would fill the button. Ticks are drawn instead. No hover fill. */
 .btnFramed {
-	width: 150px;
-	max-width: 150px;
+	width: auto;
+	max-width: none;
 	min-width: 150px;
 	height: 50px;
-	padding: 0 8px;
+	padding: 0 20px;
 	border: 0;
 	font-size: 15px;
 	cursor: pointer;
@@ -872,6 +872,12 @@ a.titleLink:hover {
 }
 .consultSec__cont {
 	text-align: center;
+}
+.consultSec__cont .btnFramed {
+	display: inline-flex;
+	width: auto;
+	max-width: none;
+	align-self: center;
 }
 .consultSec__title {
 	margin-bottom: 40px;

@@ -511,7 +511,11 @@
 			}
 			var box = holder.getBoundingClientRect();
 			var progress = clamp((viewport - box.top) / (viewport + box.height), 0, 1);
-			item.style.transform = 'translate3d(0, ' + (-extra * (1 - progress)).toFixed(2) + 'px, 0)';
+			var shift = extra * (1 - progress);
+			if (holder.closest('.footerBox--lg')) {
+				shift = -shift;
+			}
+			item.style.transform = 'translate3d(0, ' + (-shift).toFixed(2) + 'px, 0)';
 		});
 	}
 
@@ -579,93 +583,36 @@
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
 	var productsList = document.querySelector('.productsSec .col-lg-7');
-	var pinMode = '';
+	var productsPinTrigger = null;
 
-	function pinInnerBox() {
-		var cs = window.getComputedStyle(productsPin);
-		var padL = parseFloat(cs.paddingLeft) || 0;
-		var padR = parseFloat(cs.paddingRight) || 0;
-		return {
-			padL: padL,
-			padR: padR,
-			innerW: Math.max(0, productsPin.clientWidth - padL - padR)
-		};
+	function clearProductsPinTrigger() {
+		if (productsPinTrigger) {
+			productsPinTrigger.kill();
+			productsPinTrigger = null;
+		}
+		if (productsHead) {
+			productsHead.style.width = '';
+			productsHead.style.maxWidth = '';
+		}
 	}
 
-	function pinClear() {
-		if (!productsHead) {
-			return;
-		}
-		productsHead.style.position = '';
-		productsHead.style.top = '';
-		productsHead.style.left = '';
-		productsHead.style.right = '';
-		productsHead.style.bottom = '';
-		productsHead.style.width = '';
-		if (productsPin) {
-			productsPin.style.minHeight = '';
-		}
-		pinMode = '';
-	}
-
-	function updateProductsPin() {
-		if (!productsPin || !productsHead || !productsList) {
+	function initProductsPin() {
+		clearProductsPinTrigger();
+		if (!productsPin || !productsHead || !productsList || !window.ScrollTrigger) {
 			return;
 		}
 		if (window.innerWidth < 992) {
-			if (pinMode !== 'off') {
-				pinClear();
-				pinMode = 'off';
-			}
 			return;
 		}
-		var topGap = 140;
-		var bottomGap = 20;
-		productsPin.style.position = 'relative';
-		var listH = productsList.offsetHeight;
-		if (listH) {
-			productsPin.style.minHeight = listH + 'px';
-		}
-		var headH = productsHead.offsetHeight;
-		var pinRect = productsPin.getBoundingClientRect();
-		var box = pinInnerBox();
-		var next;
-		if (pinRect.top > topGap) {
-			next = 'top';
-		} else if (pinRect.bottom - bottomGap < topGap + headH) {
-			next = 'bottom';
-		} else {
-			next = 'fixed';
-		}
-		if (next === pinMode && next !== 'fixed') {
-			return;
-		}
-		if (next === 'top') {
-			productsHead.style.position = 'relative';
-			productsHead.style.top = '0px';
-			productsHead.style.bottom = 'auto';
-			productsHead.style.left = 'auto';
-			productsHead.style.right = 'auto';
-			productsHead.style.width = box.innerW + 'px';
-			productsHead.style.maxWidth = box.innerW + 'px';
-		} else if (next === 'bottom') {
-			productsHead.style.position = 'absolute';
-			productsHead.style.top = 'auto';
-			productsHead.style.bottom = bottomGap + 'px';
-			productsHead.style.left = box.padL + 'px';
-			productsHead.style.right = 'auto';
-			productsHead.style.width = box.innerW + 'px';
-			productsHead.style.maxWidth = box.innerW + 'px';
-		} else {
-			productsHead.style.position = 'fixed';
-			productsHead.style.top = topGap + 'px';
-			productsHead.style.bottom = 'auto';
-			productsHead.style.left = (pinRect.left + box.padL) + 'px';
-			productsHead.style.right = 'auto';
-			productsHead.style.width = box.innerW + 'px';
-			productsHead.style.maxWidth = box.innerW + 'px';
-		}
-		pinMode = next;
+		productsPinTrigger = window.ScrollTrigger.create({
+			trigger: productsPin,
+			start: 'top 140px',
+			endTrigger: productsPin,
+			end: 'bottom bottom',
+			pin: productsHead,
+			pinSpacing: false,
+			invalidateOnRefresh: true
+		});
 	}
 
 	function update() {
@@ -675,7 +622,6 @@
 		updateRevealTitles(viewport);
 		updateDissolve();
 		updateNavOnLight();
-		updateProductsPin();
 		ticking = false;
 	}
 
@@ -687,11 +633,24 @@
 	}
 
 	window.addEventListener('scroll', requestUpdate, { passive: true });
-	window.addEventListener('resize', requestUpdate);
-	window.addEventListener('load', requestUpdate);
+	window.addEventListener('resize', function () {
+		initProductsPin();
+		if (window.ScrollTrigger) {
+			window.ScrollTrigger.refresh();
+		}
+		requestUpdate();
+	});
+	window.addEventListener('load', function () {
+		initProductsPin();
+		if (window.ScrollTrigger) {
+			window.ScrollTrigger.refresh();
+		}
+		requestUpdate();
+	});
 	if (window.gsap) {
 		window.gsap.ticker.add(requestUpdate);
 	}
+	initProductsPin();
 	update();
 	/* end scroll driven effects */
 
