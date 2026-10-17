@@ -7,44 +7,16 @@
 	};
 
 	var smoother = null;
-	var productsPinTriggerRef = null;
-	var productsHeadRef = null;
-
-	function roundSmoothScrollY() {
-		if (!window.gsap) {
-			return;
-		}
-		var smoothContent = document.querySelector('#smooth-content');
-		if (smoothContent) {
-			var y = window.gsap.getProperty(smoothContent, 'y');
-			if (typeof y === 'number') {
-				var ry = Math.round(y);
-				if (ry !== y) {
-					window.gsap.set(smoothContent, { y: ry });
-				}
-			}
-		}
-		if (productsPinTriggerRef && productsPinTriggerRef.isActive && productsHeadRef) {
-			var headY = window.gsap.getProperty(productsHeadRef, 'y');
-			if (typeof headY === 'number') {
-				var rh = Math.round(headY);
-				if (rh !== headY) {
-					window.gsap.set(productsHeadRef, { y: rh });
-				}
-			}
-		}
-	}
 
 	if (window.gsap && window.ScrollTrigger && window.ScrollSmoother && document.querySelector('#smooth-content')) {
 		window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
 		window.ScrollTrigger.normalizeScroll(false);
+		/* Lumna smoother-script.js: smooth 2 + effects true (data-speed parallax) */
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
-			effects: false,
-			smoothTouch: 0.1,
-			onUpdate: roundSmoothScrollY
+			effects: true,
+			smoothTouch: 0.1
 		});
-		window.gsap.ticker.lagSmoothing(0);
 	}
 
 	function getScroll() {
@@ -529,7 +501,7 @@
 	/* end split title into words */
 
 	/* start scroll driven effects */
-	var parallaxItems = document.querySelectorAll('[data-parallax]');
+	var parallaxItems = document.querySelectorAll('[data-parallax]:not([data-speed])');
 	var parallaxScrollTriggers = [];
 	var visionCards = document.querySelectorAll('[data-vision-card]');
 	var revealTitles = document.querySelectorAll('.revealWords');
@@ -578,11 +550,6 @@
 						end: 'bottom top',
 						scrub: true,
 						invalidateOnRefresh: true
-					},
-					modifiers: {
-						y: function (y) {
-							return Math.round(parseFloat(y)) + 'px';
-						}
 					}
 				}
 			);
@@ -655,7 +622,6 @@
 	var ticking = false;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
-	productsHeadRef = productsHead;
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var productsPinTrigger = null;
 
@@ -692,7 +658,6 @@
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
-			productsPinTriggerRef = null;
 		}
 		unlockProductsHeadWidth();
 		if (productsPin) {
@@ -745,7 +710,6 @@
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
-		productsPinTriggerRef = productsPinTrigger;
 	}
 
 	function refreshScrollLayout() {
