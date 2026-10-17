@@ -516,6 +516,13 @@
 		});
 	}
 
+	function parallaxTriggerEl(item, holder) {
+		if (holder.closest('.consultSec')) {
+			return holder.closest('.consultSec');
+		}
+		return holder;
+	}
+
 	function initParallaxTriggers() {
 		clearParallaxTriggers();
 		if (!window.gsap || !window.ScrollTrigger) {
@@ -530,20 +537,21 @@
 			if (extra <= 0) {
 				return;
 			}
-			var fromY = -extra;
-			var toY = 0;
+			var triggerEl = parallaxTriggerEl(item, holder);
+			var fromPos = 'center 0%';
+			var toPos = 'center 100%';
 			if (holder.closest('.footerBox--lg')) {
-				fromY = 0;
-				toY = -extra;
+				fromPos = 'center 100%';
+				toPos = 'center 0%';
 			}
 			var tween = window.gsap.fromTo(
 				item,
-				{ y: fromY, force3D: true },
+				{ backgroundPosition: fromPos },
 				{
-					y: toY,
+					backgroundPosition: toPos,
 					ease: 'none',
 					scrollTrigger: {
-						trigger: holder,
+						trigger: triggerEl,
 						start: 'top bottom',
 						end: 'bottom top',
 						scrub: true,
@@ -623,15 +631,41 @@
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var productsPinTrigger = null;
 
+	function productsHeadInnerWidth() {
+		if (!productsPin || !productsHead) {
+			return 0;
+		}
+		var cs = window.getComputedStyle(productsPin);
+		var padL = parseFloat(cs.paddingLeft) || 0;
+		var padR = parseFloat(cs.paddingRight) || 0;
+		return Math.max(productsPin.clientWidth - padL - padR, 0);
+	}
+
+	function lockProductsHeadWidth() {
+		if (!productsHead) {
+			return;
+		}
+		var w = productsHeadInnerWidth();
+		if (w) {
+			productsHead.style.width = w + 'px';
+			productsHead.style.maxWidth = w + 'px';
+		}
+	}
+
+	function unlockProductsHeadWidth() {
+		if (!productsHead) {
+			return;
+		}
+		productsHead.style.width = '';
+		productsHead.style.maxWidth = '';
+	}
+
 	function clearProductsPinTrigger() {
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
 		}
-		if (productsHead) {
-			productsHead.style.width = '';
-			productsHead.style.maxWidth = '';
-		}
+		unlockProductsHeadWidth();
 		if (productsPin) {
 			productsPin.style.width = '';
 			productsPin.style.maxWidth = '';
@@ -660,17 +694,23 @@
 		if (window.innerWidth < 992) {
 			return;
 		}
+		var pinScroll = Math.max(
+			productsList.offsetHeight - productsHead.offsetHeight - 20,
+			0
+		);
 		productsPinTrigger = window.ScrollTrigger.create({
 			trigger: productsPin,
 			start: 'top 140px',
-			endTrigger: productsPin,
-			end: 'bottom bottom',
+			end: '+=' + pinScroll,
 			pin: productsHead,
 			pinSpacing: false,
-			pinReparent: true,
-			pinType: 'fixed',
 			anticipatePin: 1,
-			invalidateOnRefresh: true
+			invalidateOnRefresh: true,
+			onEnter: lockProductsHeadWidth,
+			onEnterBack: lockProductsHeadWidth,
+			onRefresh: lockProductsHeadWidth,
+			onLeave: unlockProductsHeadWidth,
+			onLeaveBack: unlockProductsHeadWidth
 		});
 	}
 
