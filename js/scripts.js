@@ -7,13 +7,42 @@
 	};
 
 	var smoother = null;
+	var productsPinTriggerRef = null;
+	var productsHeadRef = null;
+
+	function roundSmoothScrollY() {
+		if (!window.gsap) {
+			return;
+		}
+		var smoothContent = document.querySelector('#smooth-content');
+		if (smoothContent) {
+			var y = window.gsap.getProperty(smoothContent, 'y');
+			if (typeof y === 'number') {
+				var ry = Math.round(y);
+				if (ry !== y) {
+					window.gsap.set(smoothContent, { y: ry });
+				}
+			}
+		}
+		if (productsPinTriggerRef && productsPinTriggerRef.isActive && productsHeadRef) {
+			var headY = window.gsap.getProperty(productsHeadRef, 'y');
+			if (typeof headY === 'number') {
+				var rh = Math.round(headY);
+				if (rh !== headY) {
+					window.gsap.set(productsHeadRef, { y: rh });
+				}
+			}
+		}
+	}
+
 	if (window.gsap && window.ScrollTrigger && window.ScrollSmoother && document.querySelector('#smooth-content')) {
 		window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
 		window.ScrollTrigger.normalizeScroll(false);
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
 			effects: false,
-			smoothTouch: 0.1
+			smoothTouch: 0.1,
+			onUpdate: roundSmoothScrollY
 		});
 		window.gsap.ticker.lagSmoothing(0);
 	}
@@ -511,16 +540,9 @@
 		}
 		Array.prototype.forEach.call(parallaxItems, function (item) {
 			if (window.gsap) {
-				window.gsap.set(item, { clearProps: 'transform' });
+				window.gsap.set(item, { clearProps: 'transform,backgroundPosition' });
 			}
 		});
-	}
-
-	function parallaxTriggerEl(item, holder) {
-		if (holder.closest('.consultSec')) {
-			return holder.closest('.consultSec');
-		}
-		return holder;
 	}
 
 	function initParallaxTriggers() {
@@ -537,18 +559,18 @@
 			if (extra <= 0) {
 				return;
 			}
-			var triggerEl = parallaxTriggerEl(item, holder);
-			var fromPos = 'center 0%';
-			var toPos = 'center 100%';
+			var triggerEl = holder.closest('.consultSec') || holder;
+			var fromY = -extra;
+			var toY = 0;
 			if (holder.closest('.footerBox--lg')) {
-				fromPos = 'center 100%';
-				toPos = 'center 0%';
+				fromY = 0;
+				toY = -extra;
 			}
 			var tween = window.gsap.fromTo(
 				item,
-				{ backgroundPosition: fromPos },
+				{ y: fromY, force3D: true },
 				{
-					backgroundPosition: toPos,
+					y: toY,
 					ease: 'none',
 					scrollTrigger: {
 						trigger: triggerEl,
@@ -556,6 +578,11 @@
 						end: 'bottom top',
 						scrub: true,
 						invalidateOnRefresh: true
+					},
+					modifiers: {
+						y: function (y) {
+							return Math.round(parseFloat(y)) + 'px';
+						}
 					}
 				}
 			);
@@ -628,6 +655,7 @@
 	var ticking = false;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
+	productsHeadRef = productsHead;
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var productsPinTrigger = null;
 
@@ -664,6 +692,7 @@
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
+			productsPinTriggerRef = null;
 		}
 		unlockProductsHeadWidth();
 		if (productsPin) {
@@ -716,6 +745,7 @@
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
+		productsPinTriggerRef = productsPinTrigger;
 	}
 
 	function refreshScrollLayout() {
