@@ -194,20 +194,17 @@ section {
 }
 /* end lightBlock */
 
-/* start main button — CodePen https://codepen.io/thebabydino/pen/qBOyQoW copied as-is.
-   Cover color is the page background (CodePen #eee → var(--bg)). Width follows the label;
-   the 20px leftover is the same 150−130 / 50−30 corner gap as the pen. */
+/* start main button — https://codepen.io/chancesq/pen/qBOyQoW
+   same 150×50 / 130×50 / 150×30 leftover = 10px corner ticks, 1s.
+   Covers in the pen are #eee because the pen page is #eee; a solid cover
+   here would fill the button. Ticks are drawn instead. No hover fill. */
 .btnFramed {
 	width: auto;
 	min-width: 150px;
 	height: 50px;
-	padding: 0 28px;
-	border: 1px solid currentColor;
-	font-size: .9rem;
-	font-weight: 500;
-	line-height: 50px;
-	color: var(--text);
-	text-decoration: none;
+	padding: 0 20px;
+	border: 0;
+	font-size: 20px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
 	display: flex;
@@ -215,45 +212,58 @@ section {
 	justify-content: center;
 	position: relative;
 	z-index: 0;
-	transition: 1s;
-	background: rgba(0, 0, 0, 0);
 	box-sizing: border-box;
+	margin: 0;
+	color: var(--text);
+	text-decoration: none;
 	white-space: nowrap;
-}
-.btnFramed::before, .btnFramed::after {
-	position: absolute;
-	background: var(--bg);
-	z-index: -1;
-	transition: 1s;
-	content: '';
-}
-.btnFramed::before {
-	height: 50px;
-	width: calc(100% - 20px);
-}
-.btnFramed::after {
-	width: 100%;
-	height: 30px;
+	background-color: transparent;
+	background-image:
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor),
+		linear-gradient(currentColor, currentColor);
+	background-repeat: no-repeat;
+	background-position:
+		top left, top right, bottom left, bottom right,
+		top left, top right, bottom left, bottom right;
+	background-size:
+		10px 1px,
+		10px 1px,
+		10px 1px,
+		10px 1px,
+		1px 10px,
+		1px 10px,
+		1px 10px,
+		1px 10px;
+	transition: background-size 1s;
 }
 .btnFramed > span {
 	position: relative;
 	z-index: 1;
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
 	user-select: none;
 }
-.btnFramed:hover::before {
-	width: 0px;
-	background: #fff;
-}
-.btnFramed:hover::after {
-	height: 0px;
-	background: #fff;
-}
 .btnFramed:hover {
-	background: #fff;
-	color: #1a1a1a;
+	background-color: transparent;
+	color: var(--text);
 	text-decoration: none;
+	background-size:
+		50% 1px,
+		50% 1px,
+		50% 1px,
+		50% 1px,
+		1px 50%,
+		1px 50%,
+		1px 50%,
+		1px 50%;
 }
 /* end main button */
 
@@ -1599,10 +1609,6 @@ a.footerSocial__btn:hover i::before {
 }
 .consult-wa {
 	color: #fff;
-}
-.consult-wa::before,
-.consult-wa::after {
-	background: var(--primary);
 }
 .consult-fab {
 	position: absolute;
