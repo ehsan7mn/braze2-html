@@ -6,7 +6,20 @@
 		return v < min ? min : (v > max ? max : v);
 	};
 
+	var smoother = null;
+	if (window.gsap && window.ScrollTrigger && window.ScrollSmoother && document.querySelector('#smooth-content')) {
+		window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
+		window.ScrollTrigger.normalizeScroll(false);
+		smoother = window.ScrollSmoother.create({
+			smooth: 2,
+			effects: true
+		});
+	}
+
 	function getScroll() {
+		if (smoother) {
+			return smoother.scrollTop();
+		}
 		return window.pageYOffset || window.scrollY || document.documentElement.scrollTop || 0;
 	}
 
@@ -311,6 +324,11 @@
 		area.addEventListener('mousemove', function (e) {
 			var box = area.getBoundingClientRect();
 			light.style.transform = 'matrix(1, 0, 0, 1, ' + (e.clientX - box.left) + ', ' + (e.clientY - box.top) + ')';
+			if (e.clientY < 120) {
+				light.style.opacity = '0';
+			} else if (light.classList.contains('lightBlock_active')) {
+				light.style.opacity = '';
+			}
 		});
 		area.addEventListener('mouseenter', function () {
 			light.classList.add('lightBlock_active');
@@ -562,7 +580,17 @@
 	var productsHead = document.querySelector('.productsHead');
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var pinMode = '';
-	var pinBoxW = 0;
+
+	function pinInnerBox() {
+		var cs = window.getComputedStyle(productsPin);
+		var padL = parseFloat(cs.paddingLeft) || 0;
+		var padR = parseFloat(cs.paddingRight) || 0;
+		return {
+			padL: padL,
+			padR: padR,
+			innerW: Math.max(0, productsPin.clientWidth - padL - padR)
+		};
+	}
 
 	function pinClear() {
 		if (!productsHead) {
@@ -600,10 +628,7 @@
 		}
 		var headH = productsHead.offsetHeight;
 		var pinRect = productsPin.getBoundingClientRect();
-		if (Math.abs(pinRect.width - pinBoxW) > 1) {
-			pinMode = '';
-			pinBoxW = pinRect.width;
-		}
+		var box = pinInnerBox();
 		var next;
 		if (pinRect.top > topGap) {
 			next = 'top';
@@ -612,33 +637,33 @@
 		} else {
 			next = 'fixed';
 		}
-		if (next === pinMode) {
+		if (next === pinMode && next !== 'fixed') {
 			return;
 		}
-		var cs = window.getComputedStyle(productsPin);
-		var padL = parseFloat(cs.paddingLeft) || 0;
-		var padR = parseFloat(cs.paddingRight) || 0;
 		if (next === 'top') {
 			productsHead.style.position = 'relative';
 			productsHead.style.top = '0px';
 			productsHead.style.bottom = 'auto';
 			productsHead.style.left = 'auto';
 			productsHead.style.right = 'auto';
-			productsHead.style.width = 'auto';
+			productsHead.style.width = box.innerW + 'px';
+			productsHead.style.maxWidth = box.innerW + 'px';
 		} else if (next === 'bottom') {
 			productsHead.style.position = 'absolute';
 			productsHead.style.top = 'auto';
 			productsHead.style.bottom = bottomGap + 'px';
-			productsHead.style.left = '0';
-			productsHead.style.right = '0';
-			productsHead.style.width = 'auto';
+			productsHead.style.left = box.padL + 'px';
+			productsHead.style.right = 'auto';
+			productsHead.style.width = box.innerW + 'px';
+			productsHead.style.maxWidth = box.innerW + 'px';
 		} else {
 			productsHead.style.position = 'fixed';
 			productsHead.style.top = topGap + 'px';
 			productsHead.style.bottom = 'auto';
-			productsHead.style.left = (pinRect.left + padL) + 'px';
+			productsHead.style.left = (pinRect.left + box.padL) + 'px';
 			productsHead.style.right = 'auto';
-			productsHead.style.width = (productsPin.clientWidth - padL - padR) + 'px';
+			productsHead.style.width = box.innerW + 'px';
+			productsHead.style.maxWidth = box.innerW + 'px';
 		}
 		pinMode = next;
 	}
@@ -664,6 +689,9 @@
 	window.addEventListener('scroll', requestUpdate, { passive: true });
 	window.addEventListener('resize', requestUpdate);
 	window.addEventListener('load', requestUpdate);
+	if (window.gsap) {
+		window.gsap.ticker.add(requestUpdate);
+	}
 	update();
 	/* end scroll driven effects */
 
