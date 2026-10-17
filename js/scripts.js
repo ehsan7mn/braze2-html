@@ -14,33 +14,6 @@
 	}
 
 	var smoother = null;
-	var productsPinTriggerRef = null;
-	var productsHeadRef = null;
-
-	function roundSmoothScrollY() {
-		if (!window.gsap) {
-			return;
-		}
-		var smoothContent = document.querySelector('#smooth-content');
-		if (smoothContent) {
-			var y = window.gsap.getProperty(smoothContent, 'y');
-			if (typeof y === 'number') {
-				var ry = Math.round(y);
-				if (ry !== y) {
-					window.gsap.set(smoothContent, { y: ry });
-				}
-			}
-		}
-		if (productsPinTriggerRef && productsPinTriggerRef.isActive && productsHeadRef) {
-			var headY = window.gsap.getProperty(productsHeadRef, 'y');
-			if (typeof headY === 'number') {
-				var rh = Math.round(headY);
-				if (rh !== headY) {
-					window.gsap.set(productsHeadRef, { y: rh });
-				}
-			}
-		}
-	}
 
 	if (window.gsap && window.ScrollTrigger) {
 		window.gsap.registerPlugin(window.ScrollTrigger);
@@ -52,14 +25,12 @@
 		document.querySelector('#smooth-content')
 	) {
 		window.gsap.registerPlugin(window.ScrollSmoother);
-		window.ScrollTrigger.normalizeScroll(false);
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
 			effects: false,
 			smoothTouch: 0.1,
-			onUpdate: roundSmoothScrollY
+			normalizeScroll: true
 		});
-		window.gsap.ticker.lagSmoothing(0);
 	}
 
 	function getScroll() {
@@ -592,12 +563,8 @@
 						start: 'top bottom',
 						end: 'bottom top',
 						scrub: true,
-						invalidateOnRefresh: true
-					},
-					modifiers: {
-						y: function (y) {
-							return Math.round(parseFloat(y)) + 'px';
-						}
+						invalidateOnRefresh: true,
+						preventOverlaps: true
 					}
 				}
 			);
@@ -670,7 +637,6 @@
 	var ticking = false;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
-	productsHeadRef = productsHead;
 	var productsList = document.querySelector('.productsSec .col-lg-7');
 	var productsPinTrigger = null;
 
@@ -707,7 +673,6 @@
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
-			productsPinTriggerRef = null;
 		}
 		unlockProductsHeadWidth();
 		if (productsPin) {
@@ -748,7 +713,9 @@
 			end: '+=' + pinScroll,
 			pin: productsHead,
 			pinSpacing: false,
+			pinType: 'transform',
 			anticipatePin: 1,
+			preventOverlaps: true,
 			invalidateOnRefresh: true,
 			onEnter: lockProductsHeadWidth,
 			onEnterBack: lockProductsHeadWidth,
@@ -760,7 +727,6 @@
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
-		productsPinTriggerRef = productsPinTrigger;
 	}
 
 	function refreshScrollLayout() {
@@ -801,7 +767,9 @@
 		window.setTimeout(refreshScrollLayout, 600);
 		requestUpdate();
 	});
-	if (window.gsap) {
+	if (smoother && window.ScrollTrigger) {
+		window.ScrollTrigger.addEventListener('update', requestUpdate);
+	} else if (window.gsap) {
 		window.gsap.ticker.add(requestUpdate);
 	}
 	refreshScrollLayout();
