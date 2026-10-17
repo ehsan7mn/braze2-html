@@ -1600,6 +1600,10 @@ a.footerSocial__btn:hover i::before {
 .consult-wa {
 	color: #fff;
 }
+.consult-wa::before,
+.consult-wa::after {
+	background: var(--primary);
+}
 .consult-fab {
 	position: absolute;
 	left: 50%;

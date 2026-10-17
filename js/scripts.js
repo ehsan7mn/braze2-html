@@ -263,20 +263,34 @@
 			}
 		});
 		initHeroGlitch(heroSwiper);
+		function heroSlideCount() {
+			var total = 0;
+			Array.prototype.forEach.call(heroSwiper.slides, function (slide) {
+				if (!slide.classList.contains('swiper-slide-duplicate')) {
+					total += 1;
+				}
+			});
+			return total || 3;
+		}
+		function heroStep(dir) {
+			var total = heroSlideCount();
+			var next = (heroSwiper.realIndex + dir + total) % total;
+			heroSwiper.slideToLoop(next, 1100, true);
+		}
 		var heroPrev = document.querySelector('.heroArrow--prev');
 		var heroNext = document.querySelector('.heroArrow--next');
 		if (heroPrev) {
 			heroPrev.addEventListener('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				heroSwiper.slidePrev();
+				heroStep(-1);
 			});
 		}
 		if (heroNext) {
 			heroNext.addEventListener('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				heroSwiper.slideNext();
+				heroStep(1);
 			});
 		}
 	}
