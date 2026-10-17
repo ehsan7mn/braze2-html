@@ -59,9 +59,17 @@ body {
 	height: 100%;
 	overflow: hidden;
 }
+html.noScrollSmoother #smooth-wrapper {
+	position: static;
+	height: auto;
+	overflow: visible;
+}
 #smooth-content {
 	overflow: visible;
 	width: 100%;
+}
+html.noScrollSmoother #smooth-content {
+	transform: none !important;
 }
 .ss02 {
     -moz-font-feature-settings: "ss02";

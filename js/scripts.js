@@ -2,9 +2,16 @@
 (function () {
 	'use strict';
 
+	/* toggle only — parallax / pin / other scroll FX unchanged */
+	var ENABLE_SCROLL_SMOOTHER = false;
+
 	var clamp = function (v, min, max) {
 		return v < min ? min : (v > max ? max : v);
 	};
+
+	if (!ENABLE_SCROLL_SMOOTHER) {
+		document.documentElement.classList.add('noScrollSmoother');
+	}
 
 	var smoother = null;
 	var productsPinTriggerRef = null;
@@ -35,8 +42,16 @@
 		}
 	}
 
-	if (window.gsap && window.ScrollTrigger && window.ScrollSmoother && document.querySelector('#smooth-content')) {
-		window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
+	if (window.gsap && window.ScrollTrigger) {
+		window.gsap.registerPlugin(window.ScrollTrigger);
+	}
+	if (
+		ENABLE_SCROLL_SMOOTHER &&
+		window.gsap &&
+		window.ScrollSmoother &&
+		document.querySelector('#smooth-content')
+	) {
+		window.gsap.registerPlugin(window.ScrollSmoother);
 		window.ScrollTrigger.normalizeScroll(false);
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
