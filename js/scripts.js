@@ -3,7 +3,7 @@
 	'use strict';
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
-	var ENABLE_SCROLL_SMOOTHER = false;
+	var ENABLE_SCROLL_SMOOTHER = true;
 
 	var clamp = function (v, min, max) {
 		return v < min ? min : (v > max ? max : v);
@@ -14,33 +14,6 @@
 	}
 
 	var smoother = null;
-	var productsPinTriggerRef = null;
-	var productsHeadRef = null;
-
-	function roundSmoothScrollY() {
-		if (!window.gsap) {
-			return;
-		}
-		var smoothContent = document.querySelector('#smooth-content');
-		if (smoothContent) {
-			var y = window.gsap.getProperty(smoothContent, 'y');
-			if (typeof y === 'number') {
-				var ry = Math.round(y);
-				if (ry !== y) {
-					window.gsap.set(smoothContent, { y: ry });
-				}
-			}
-		}
-		if (productsPinTriggerRef && productsPinTriggerRef.isActive && productsHeadRef) {
-			var headY = window.gsap.getProperty(productsHeadRef, 'y');
-			if (typeof headY === 'number') {
-				var rh = Math.round(headY);
-				if (rh !== headY) {
-					window.gsap.set(productsHeadRef, { y: rh });
-				}
-			}
-		}
-	}
 
 	if (window.gsap && window.ScrollTrigger) {
 		window.gsap.registerPlugin(window.ScrollTrigger);
@@ -53,13 +26,11 @@
 	) {
 		window.gsap.registerPlugin(window.ScrollSmoother);
 		window.ScrollTrigger.normalizeScroll(false);
+		/* Lumna smoother-script.js */
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
-			effects: false,
-			smoothTouch: 0.1,
-			onUpdate: roundSmoothScrollY
+			effects: true
 		});
-		window.gsap.ticker.lagSmoothing(0);
 	}
 
 	function getScroll() {
@@ -544,7 +515,7 @@
 	/* end split title into words */
 
 	/* start scroll driven effects */
-	var parallaxItems = document.querySelectorAll('[data-parallax]');
+	var parallaxItems = document.querySelectorAll('[data-parallax]:not([data-speed])');
 	var parallaxScrollTriggers = [];
 	var visionCards = document.querySelectorAll('[data-vision-card]');
 	var revealTitles = document.querySelectorAll('.revealWords');
@@ -593,11 +564,6 @@
 						end: 'bottom top',
 						scrub: true,
 						invalidateOnRefresh: true
-					},
-					modifiers: {
-						y: function (y) {
-							return Math.round(parseFloat(y)) + 'px';
-						}
 					}
 				}
 			);
