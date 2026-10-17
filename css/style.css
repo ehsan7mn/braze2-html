@@ -711,6 +711,9 @@ section {
 	padding: 100px 0;
 	background: var(--bg);
 }
+.productsSec .row {
+	align-items: stretch;
+}
 @media (min-width: 992px) {
 	.productsPin {
 		position: relative;
