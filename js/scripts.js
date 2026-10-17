@@ -716,6 +716,9 @@
 		syncProductsPinHeight();
 		initProductsPin();
 		initParallaxTriggers();
+		if (smoother && typeof smoother.effects === 'function') {
+			smoother.effects();
+		}
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
 		}
