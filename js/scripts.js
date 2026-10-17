@@ -556,28 +556,48 @@
 				return;
 			}
 			var triggerEl = holder;
-			var fromY = -extra;
-			var toY = 0;
-			if (holder.closest('.footerBox--lg')) {
-				fromY = 0;
-				toY = -extra;
-			}
-			var tween = window.gsap.fromTo(
-				item,
-				{ y: fromY, force3D: true },
-				{
-					y: toY,
-					ease: 'none',
-					scrollTrigger: {
-						trigger: triggerEl,
-						start: 'top bottom',
-						end: 'bottom top',
-						scrub: true,
-						invalidateOnRefresh: true,
-						preventOverlaps: true
+			var tween;
+			/* consult: bg-position only (no Y on clipped layer — products/footer unchanged below) */
+			if (item.classList.contains('consultSec__bg')) {
+				tween = window.gsap.fromTo(
+					item,
+					{ backgroundPosition: '50% 0%' },
+					{
+						backgroundPosition: '50% 100%',
+						ease: 'none',
+						scrollTrigger: {
+							trigger: triggerEl,
+							start: 'top bottom',
+							end: 'bottom top',
+							scrub: true,
+							invalidateOnRefresh: true
+						}
 					}
+				);
+			} else {
+				var fromY = -extra;
+				var toY = 0;
+				if (holder.closest('.footerBox--lg')) {
+					fromY = 0;
+					toY = -extra;
 				}
-			);
+				tween = window.gsap.fromTo(
+					item,
+					{ y: fromY, force3D: true },
+					{
+						y: toY,
+						ease: 'none',
+						scrollTrigger: {
+							trigger: triggerEl,
+							start: 'top bottom',
+							end: 'bottom top',
+							scrub: true,
+							invalidateOnRefresh: true,
+							preventOverlaps: true
+						}
+					}
+				);
+			}
 			if (tween.scrollTrigger) {
 				parallaxScrollTriggers.push(tween.scrollTrigger);
 			}
@@ -814,7 +834,7 @@
 		if (!reviewsLayout || !reviewsSide) {
 			return;
 		}
-		reviewsLayout.style.setProperty('--side-h', reviewsSide.offsetHeight + 'px');
+		reviewsLayout.style.setProperty('--side-h', Math.round(reviewsSide.offsetHeight) + 'px');
 	}
 	Array.prototype.forEach.call(document.querySelectorAll('.review-card'), function (card) {
 		card.style.height = 'auto';
