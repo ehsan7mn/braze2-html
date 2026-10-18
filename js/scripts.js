@@ -756,17 +756,11 @@
 			end: '+=' + pinScroll,
 			pin: productsHead,
 			pinSpacing: false,
-			pinType: 'transform',
 			anticipatePin: 1,
-			preventOverlaps: true,
 			invalidateOnRefresh: true,
 			onEnter: lockProductsHeadWidth,
 			onEnterBack: lockProductsHeadWidth,
-			onRefresh: function (self) {
-				if (self.isActive) {
-					lockProductsHeadWidth();
-				}
-			},
+			onRefresh: lockProductsHeadWidth,
 			onLeave: unlockProductsHeadWidth,
 			onLeaveBack: unlockProductsHeadWidth
 		});
