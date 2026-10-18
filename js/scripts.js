@@ -654,7 +654,12 @@
 
 	var navOuter = document.querySelector('.navOuter');
 	function updateNavOnLight() {
-		if (!navOuter || !heroSec) {
+		if (!navOuter) {
+			return;
+		}
+		var scrolled = getScroll() > 72;
+		if (!heroSec) {
+			navOuter.classList.toggle('isOnLight', scrolled);
 			return;
 		}
 		var navBox = navOuter.getBoundingClientRect();
@@ -663,7 +668,7 @@
 		var onTail = navBox.bottom > grayBandTop && navBox.top < heroBox.bottom + 8;
 		var grayFromDissolve = heroBox.bottom - clamp(dissolveProgress * 1.2, 0, 1) * heroBox.height;
 		var onDissolve = navBox.bottom > grayFromDissolve && navBox.top < heroBox.bottom;
-		navOuter.classList.toggle('isOnLight', onTail || onDissolve);
+		navOuter.classList.toggle('isOnLight', scrolled || onTail || onDissolve);
 	}
 
 	var ticking = false;

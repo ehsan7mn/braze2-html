@@ -462,29 +462,16 @@ section {
 	transform-origin: right center;
 }
 
-/* nav debug: plain white bar + submenus (no glass blur) */
-.mainNav.glass::before,
-.subMenu.glass::before {
+/* scrolled / on light: solid white nav + submenus (default top = glass) */
+.navOuter.isOnLight .mainNav.glass::before,
+.navOuter.isOnLight .subMenu.glass::before {
 	background: #fff;
 	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
 }
-.navOuter .mainMenu > li > a,
-.navOuter .navIcon {
+.navOuter.isOnLight .mainMenu > li > a,
+.navOuter.isOnLight .navIcon {
 	color: #1a1a1a;
-}
-.navOuter .subMenu > li > a {
-	color: #1a1a1a;
-}
-.navOuter .navLogo .logoLight {
-	display: none;
-}
-.navOuter .navLogo .logoDark {
-	display: block;
-}
-/* gray dissolve slab — bar stays white while testing */
-.navOuter.isOnLight .mainNav.glass::before {
-	background: #fff;
 }
 .navOuter.isOnLight .mainMenu > li > a:hover,
 .navOuter.isOnLight .mainMenu > li:hover > a {
@@ -494,10 +481,16 @@ section {
 	color: var(--primary);
 }
 .navOuter.isOnLight .subMenu > li > a {
-	color: var(--bg);
+	color: #1a1a1a;
 }
 .navOuter.isOnLight .subMenu > li:hover > a {
 	color: var(--primary);
+}
+.navOuter.isOnLight .navLogo .logoLight {
+	display: none;
+}
+.navOuter.isOnLight .navLogo .logoDark {
+	display: block;
 }
 /* end header */
 
