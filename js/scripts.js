@@ -855,30 +855,37 @@
 			}
 		});
 	}
-	/* continuous logo strip — same idea as codepen.io/fghtech/pen/NWJvWmv */
-	if (window.Swiper && document.querySelector('.logo-swiper')) {
-		new Swiper('.logo-swiper', {
-			loop: true,
-			freeMode: true,
-			slidesPerView: 'auto',
-			spaceBetween: 56,
-			speed: 6000,
-			allowTouchMove: false,
-			autoplay: {
-				delay: 0,
-				disableOnInteraction: false
-			},
-			loopAdditionalSlides: 7,
-			on: {
-				init: function () {
-					this.wrapperEl.style.transitionTimingFunction = 'linear';
-				},
-				setTranslate: function () {
-					this.wrapperEl.style.transitionTimingFunction = 'linear';
-				}
+	/* logo strip: integer-pixel shift so the loop seam does not snap 1px (Swiper loop does) */
+	(function () {
+		var marquee = document.querySelector('.logo-marquee');
+		var track = marquee && marquee.querySelector('.logo-track');
+		var set = track && track.querySelector('.logo-set');
+		if (!marquee || !track || !set) {
+			return;
+		}
+		function run() {
+			if (track.querySelectorAll('.logo-set').length > 1) {
+				return;
 			}
-		});
-	}
+			var guard = 0;
+			while (set.offsetWidth < marquee.clientWidth + 92 && guard < 5) {
+				set.insertAdjacentHTML('beforeend', set.innerHTML);
+				guard += 1;
+			}
+			var clone = set.cloneNode(true);
+			clone.setAttribute('aria-hidden', 'true');
+			track.appendChild(clone);
+			var shift = set.offsetWidth;
+			track.style.setProperty('--logo-shift', shift + 'px');
+			track.style.setProperty('--logo-dur', (shift / 70) + 's');
+			track.classList.add('is-run');
+		}
+		if (document.readyState === 'complete') {
+			run();
+		} else {
+			window.addEventListener('load', run);
+		}
+	}());
 	var reviewsLayout = document.querySelector('.reviews-layout');
 	var reviewsSide = document.querySelector('.reviews-side');
 	function syncReviewHeight() {
