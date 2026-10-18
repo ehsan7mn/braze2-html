@@ -201,10 +201,10 @@ jQuery استفاده نشده است؛ همه کدها Vanilla JS هستند.
 - <https://tympanus.net/codrops/2014/04/23/how-to-create-a-glitch-effect-with-css/>
   - **هاور لینک داخل `.post_single` (`.link--helike`):** افکت glitch متن و خط، از آموزش Lucas Bebber در Codrops.
     دمو: <https://tympanus.net/Tutorials/CSSGlitchEffect/>
-- <https://rasamidea.com>
-  - **نوار لوگوی مشتریان:** حرکت یکنواخت و بدون پرش، مثل اسلایدر لوگوهای همین سایت
-    (معادل رفتار [infiniteslidev2](https://github.com/woodroots/infiniteslidev2) بدون jQuery).
-    دو ردیف یکسان با `translate3d(-50%)` و `linear` بی‌نهایت.
+- <https://github.com/woodroots/infiniteslidev2>
+  - **نوار لوگوی مشتریان:** همان infiniteslide v2، در `js/infiniteslide.js` بدون jQuery.
+    بچه‌ها یک‌بار کلون می‌شوند، عرض واقعی (با مارجین) جمع می‌شود و
+    `translate3d` خطی به همان اندازه تکرار می‌شود. سرعت ۸۰ پیکسل در ثانیه.
 - فوتر `footer.siteFooter` در صفحهٔ اصلی، فروشگاه و تماس یکی است.
 
 ## کارهای باقی‌مانده
