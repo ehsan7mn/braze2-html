@@ -212,6 +212,9 @@ section {
 .lightBlock_active {
 	opacity: .8;
 }
+html.noMouseEffects .lightBlock {
+	display: none !important;
+}
 /* end lightBlock */
 
 /* start main button — https://codepen.io/chancesq/pen/qBOyQoW
@@ -651,6 +654,8 @@ section {
 .visionCard__text {
 	margin-bottom: 40px;
 	color: rgba(255, 255, 255, .7);
+	text-align: justify;
+	text-justify: inter-word;
 }
 .visionCard .btnFramed {
 	margin-top: auto;
@@ -1787,6 +1792,9 @@ a.footerSocial__btn:hover i::before {
 	.cursor {
 		display: none;
 	}
+}
+html.noMouseEffects .cursor {
+	display: none !important;
 }
 /* end Lumna cursor */
 

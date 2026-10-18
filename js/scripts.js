@@ -4,6 +4,12 @@
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
 	var ENABLE_SCROLL_SMOOTHER = false;
+	/* Lumna cursor, lightBlock follow, shop hover-this — off for testing */
+	var ENABLE_MOUSE_EFFECTS = false;
+
+	if (!ENABLE_MOUSE_EFFECTS) {
+		document.documentElement.classList.add('noMouseEffects');
+	}
 
 	var clamp = function (v, min, max) {
 		return v < min ? min : (v > max ? max : v);
@@ -343,7 +349,7 @@
 	/* end hero slider */
 
 	/* start lightBlock */
-	Array.prototype.forEach.call(document.querySelectorAll('.lightArea'), function (area) {
+	if (ENABLE_MOUSE_EFFECTS) Array.prototype.forEach.call(document.querySelectorAll('.lightArea'), function (area) {
 		var light = area.querySelector('.lightBlock');
 		if (!light) {
 			return;
@@ -1156,41 +1162,43 @@
 	/* end blog glitch */
 
 	/* start Lumna cursor + hover-this */
-	var cursor = document.querySelector('.cursor');
-	if (cursor) {
-		window.addEventListener('mousemove', function (e) {
-			cursor.style.left = e.clientX + 'px';
-			cursor.style.top = e.clientY + 'px';
-		});
-		document.addEventListener('mouseover', function (e) {
-			if (e.target.closest('a, button, .cursor-pointer')) {
-				cursor.classList.add('cursor-active');
+	if (ENABLE_MOUSE_EFFECTS) {
+		var cursor = document.querySelector('.cursor');
+		if (cursor) {
+			window.addEventListener('mousemove', function (e) {
+				cursor.style.left = e.clientX + 'px';
+				cursor.style.top = e.clientY + 'px';
+			});
+			document.addEventListener('mouseover', function (e) {
+				if (e.target.closest('a, button, .cursor-pointer')) {
+					cursor.classList.add('cursor-active');
+				}
+			});
+			document.addEventListener('mouseout', function (e) {
+				var link = e.target.closest('a, button, .cursor-pointer');
+				if (link && !link.contains(e.relatedTarget)) {
+					cursor.classList.remove('cursor-active');
+				}
+			});
+		}
+		Array.prototype.forEach.call(document.querySelectorAll('.hover-this'), function (item) {
+			var hoverAnim = item.querySelector('.hover-anim');
+			if (!hoverAnim) {
+				return;
 			}
-		});
-		document.addEventListener('mouseout', function (e) {
-			var link = e.target.closest('a, button, .cursor-pointer');
-			if (link && !link.contains(e.relatedTarget)) {
-				cursor.classList.remove('cursor-active');
-			}
+			item.addEventListener('mousemove', function (e) {
+				var x = e.offsetX;
+				var y = e.offsetY;
+				var move = 100;
+				var xMove = x / item.offsetWidth * (move * 2) - move;
+				var yMove = y / item.offsetHeight * (move * 2) - move;
+				hoverAnim.style.transform = 'translate(' + xMove + 'px, ' + yMove + 'px)';
+			});
+			item.addEventListener('mouseleave', function () {
+				hoverAnim.style.transform = '';
+			});
 		});
 	}
-	Array.prototype.forEach.call(document.querySelectorAll('.hover-this'), function (item) {
-		var hoverAnim = item.querySelector('.hover-anim');
-		if (!hoverAnim) {
-			return;
-		}
-		item.addEventListener('mousemove', function (e) {
-			var x = e.offsetX;
-			var y = e.offsetY;
-			var move = 100;
-			var xMove = x / item.offsetWidth * (move * 2) - move;
-			var yMove = y / item.offsetHeight * (move * 2) - move;
-			hoverAnim.style.transform = 'translate(' + xMove + 'px, ' + yMove + 'px)';
-		});
-		item.addEventListener('mouseleave', function () {
-			hoverAnim.style.transform = '';
-		});
-	});
 	/* end Lumna cursor + hover-this */
 
 	/* start aos */
