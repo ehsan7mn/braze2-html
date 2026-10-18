@@ -409,14 +409,25 @@ html.noMouseEffects .lightBlock {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transform: translateZ(0);
-	transition: opacity .35s ease, visibility 0s linear .35s;
+	transition: opacity .28s ease, visibility 0s linear .28s;
+}
+/* glass on the menu itself so blur and text fade as one layer
+   (a separate ::before composites later than the links) */
+.subMenu.glass {
+	background: var(--glass);
+	-webkit-backdrop-filter: blur(18px);
+	backdrop-filter: blur(18px);
+	isolation: isolate;
+}
+.subMenu.glass::before {
+	content: none;
+	display: none;
 }
 .mainMenu li:hover > .subMenu {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
-	transition: opacity .35s ease, visibility 0s;
+	transition: opacity .28s ease, visibility 0s;
 }
 .subMenu > li {
 	position: relative;
@@ -437,7 +448,7 @@ html.noMouseEffects .lightBlock {
 	width: 1px;
 	height: 0;
 	background: var(--text);
-	transition: height .5s;
+	transition: height .2s ease;
 }
 .subMenu > li:hover::before {
 	height: 100%;
@@ -452,9 +463,12 @@ html.noMouseEffects .lightBlock {
 	font-weight: 500;
 	line-height: 28px;
 	color: var(--text);
+	background: transparent;
+	transition: color .2s ease, background-color .2s ease;
 }
 .subMenu > li:hover > a {
 	color: var(--primary);
+	background: rgba(255, 255, 255, .06);
 }
 .subMenu .subMenu {
 	top: 0;
