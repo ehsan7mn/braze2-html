@@ -349,7 +349,7 @@
 	/* end hero slider */
 
 	/* start lightBlock */
-	if (ENABLE_MOUSE_EFFECTS) Array.prototype.forEach.call(document.querySelectorAll('.lightArea'), function (area) {
+	Array.prototype.forEach.call(document.querySelectorAll('.lightArea'), function (area) {
 		var light = area.querySelector('.lightBlock');
 		if (!light) {
 			return;
@@ -357,7 +357,8 @@
 		area.addEventListener('mousemove', function (e) {
 			var box = area.getBoundingClientRect();
 			light.style.transform = 'matrix(1, 0, 0, 1, ' + (e.clientX - box.left) + ', ' + (e.clientY - box.top) + ')';
-			if (e.clientY < 120) {
+			/* keep the blurred disc below the glass nav so it does not halo through it */
+			if (e.clientY < 200) {
 				light.style.opacity = '0';
 			} else if (light.classList.contains('lightBlock_active')) {
 				light.style.opacity = '';
@@ -919,39 +920,6 @@
 	}
 	/* end stats counters */
 
-	/* start logo grayscale → color */
-	var logoSets = document.querySelectorAll('.logo-set');
-	var logoMarquee = document.querySelector('.logo-marquee');
-	if (logoSets.length) {
-		var seed = logoSets[0].innerHTML;
-		var guard = 0;
-		while (logoSets[0].getBoundingClientRect().width < window.innerWidth + 80 && guard < 5) {
-			Array.prototype.forEach.call(logoSets, function (set) {
-				set.insertAdjacentHTML('beforeend', seed);
-			});
-			guard += 1;
-		}
-	}
-	if (logoMarquee) {
-		var logoImgs = logoMarquee.querySelectorAll('img');
-		var paintLogos = function () {
-			var box = logoMarquee.getBoundingClientRect();
-			var mid = box.left + box.width / 2;
-			var half = box.width / 2 || 1;
-			Array.prototype.forEach.call(logoImgs, function (img) {
-				var rect = img.getBoundingClientRect();
-				var center = rect.left + rect.width / 2;
-				var dist = Math.min(1, Math.abs(center - mid) / half);
-				img.style.filter = 'grayscale(' + dist.toFixed(3) + ')';
-			});
-			window.requestAnimationFrame(paintLogos);
-		};
-		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-			paintLogos();
-		}
-	}
-	/* end logo grayscale → color */
-
 	/* start blog glitch — Lumna journal hover-effect, raw WebGL, no Three/GSAP */
 	var GLITCH_VERT = [
 		'attribute vec2 aPos;',
@@ -1202,25 +1170,26 @@
 				}
 			});
 		}
-		Array.prototype.forEach.call(document.querySelectorAll('.hover-this'), function (item) {
-			var hoverAnim = item.querySelector('.hover-anim');
-			if (!hoverAnim) {
-				return;
-			}
-			item.addEventListener('mousemove', function (e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
-				var move = 100;
-				var xMove = x / item.offsetWidth * (move * 2) - move;
-				var yMove = y / item.offsetHeight * (move * 2) - move;
-				hoverAnim.style.transform = 'translate(' + xMove + 'px, ' + yMove + 'px)';
-			});
-			item.addEventListener('mouseleave', function () {
-				hoverAnim.style.transform = '';
-			});
-		});
 	}
-	/* end Lumna cursor + hover-this */
+	/* end Lumna cursor */
+	/* shop gallery travel — always on, independent of the cursor toggle */
+	Array.prototype.forEach.call(document.querySelectorAll('.hover-this'), function (item) {
+		var hoverAnim = item.querySelector('.hover-anim');
+		if (!hoverAnim) {
+			return;
+		}
+		item.addEventListener('mousemove', function (e) {
+			var x = e.offsetX;
+			var y = e.offsetY;
+			var move = 100;
+			var xMove = x / item.offsetWidth * (move * 2) - move;
+			var yMove = y / item.offsetHeight * (move * 2) - move;
+			hoverAnim.style.transform = 'translate(' + xMove + 'px, ' + yMove + 'px)';
+		});
+		item.addEventListener('mouseleave', function () {
+			hoverAnim.style.transform = '';
+		});
+	});
 
 	/* start aos */
 	if (window.AOS) {

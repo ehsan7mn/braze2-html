@@ -191,6 +191,22 @@ jQuery استفاده نشده است؛ همه کدها Vanilla JS هستند.
 
 اعداد صفحه (تلفن، آدرس، آمپر محصولات) داخل `.ss02` هستند تا با stylistic set فونت ایران‌یکان فارسی شوند.
 
+### صفحه فروشگاه و تماس
+
+- <https://uithemez.com/i/Lumna/home-main.html>
+  - **پنج عکس بالای فروشگاه:** همان `hover-this` / `hover-anim` با جابه‌جایی `move = 100` روی حرکت موس.
+  - **هاور عکس داخل `.wp-caption`:** همان displacement/glitch سکشن اخبار (`hover-effect` + `img/heightMap.png`).
+- <https://pooyanbattery.ir>
+  - متن مقالهٔ صفحه فروشگاه از همین سایت برداشته شده.
+- <https://tympanus.net/codrops/2014/04/23/how-to-create-a-glitch-effect-with-css/>
+  - **هاور لینک داخل `.post_single` (`.link--helike`):** افکت glitch متن و خط، از آموزش Lucas Bebber در Codrops.
+    دمو: <https://tympanus.net/Tutorials/CSSGlitchEffect/>
+- <https://rasamidea.com>
+  - **نوار لوگوی مشتریان:** حرکت یکنواخت و بدون پرش، مثل اسلایدر لوگوهای همین سایت
+    (معادل رفتار [infiniteslidev2](https://github.com/woodroots/infiniteslidev2) بدون jQuery).
+    دو ردیف یکسان با `translate3d(-50%)` و `linear` بی‌نهایت.
+- فوتر `footer.siteFooter` در صفحهٔ اصلی، فروشگاه و تماس یکی است.
+
 ## کارهای باقی‌مانده
 
 - **لوگو:** `img/logo1.png` متن تیره دارد و روی هدر تیره دیده نمی‌شد، پس یک نسخه روشن
