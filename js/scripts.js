@@ -704,6 +704,18 @@
 		}
 	}
 
+	function lockProductsPinColumn() {
+		if (!productsPin || window.innerWidth < 992) {
+			return;
+		}
+		var w = productsPin.offsetWidth;
+		if (w) {
+			productsPin.style.width = w + 'px';
+			productsPin.style.maxWidth = w + 'px';
+			productsPin.style.flex = '0 0 ' + w + 'px';
+		}
+	}
+
 	function unlockProductsHeadWidth() {
 		if (!productsHead) {
 			return;
@@ -712,16 +724,22 @@
 		productsHead.style.maxWidth = '';
 	}
 
+	function unlockProductsPinColumn() {
+		if (!productsPin) {
+			return;
+		}
+		productsPin.style.width = '';
+		productsPin.style.maxWidth = '';
+		productsPin.style.flex = '';
+	}
+
 	function clearProductsPinTrigger() {
 		if (productsPinTrigger) {
 			productsPinTrigger.kill();
 			productsPinTrigger = null;
 		}
 		unlockProductsHeadWidth();
-		if (productsPin) {
-			productsPin.style.width = '';
-			productsPin.style.maxWidth = '';
-		}
+		unlockProductsPinColumn();
 	}
 
 	function syncProductsPinHeight() {
@@ -750,19 +768,39 @@
 			productsList.offsetHeight - productsHead.offsetHeight - 20,
 			0
 		);
+		/* lock before pin engages — avoids one-frame width jump on enter */
+		lockProductsPinColumn();
+		lockProductsHeadWidth();
 		productsPinTrigger = window.ScrollTrigger.create({
 			trigger: productsPin,
 			start: 'top 140px',
 			end: '+=' + pinScroll,
 			pin: productsHead,
 			pinSpacing: false,
-			anticipatePin: 1,
+			pinReparent: false,
 			invalidateOnRefresh: true,
-			onEnter: lockProductsHeadWidth,
-			onEnterBack: lockProductsHeadWidth,
-			onRefresh: lockProductsHeadWidth,
-			onLeave: unlockProductsHeadWidth,
-			onLeaveBack: unlockProductsHeadWidth
+			onEnter: function () {
+				lockProductsPinColumn();
+				lockProductsHeadWidth();
+			},
+			onEnterBack: function () {
+				lockProductsPinColumn();
+				lockProductsHeadWidth();
+			},
+			onRefresh: function (self) {
+				if (self.isActive) {
+					lockProductsPinColumn();
+					lockProductsHeadWidth();
+				}
+			},
+			onLeave: function () {
+				unlockProductsHeadWidth();
+				unlockProductsPinColumn();
+			},
+			onLeaveBack: function () {
+				unlockProductsHeadWidth();
+				unlockProductsPinColumn();
+			}
 		});
 	}
 
