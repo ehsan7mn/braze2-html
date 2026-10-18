@@ -202,9 +202,11 @@ jQuery استفاده نشده است؛ همه کدها Vanilla JS هستند.
   - **هاور لینک داخل `.post_single` (`.link--helike`):** افکت glitch متن و خط، از آموزش Lucas Bebber در Codrops.
     دمو: <https://tympanus.net/Tutorials/CSSGlitchEffect/>
 - <https://github.com/woodroots/infiniteslidev2>
-  - **نوار لوگوی مشتریان:** همان infiniteslide v2، در `js/infiniteslide.js` بدون jQuery.
-    بچه‌ها یک‌بار کلون می‌شوند، عرض واقعی (با مارجین) جمع می‌شود و
-    `translate3d` خطی به همان اندازه تکرار می‌شود. سرعت ۸۰ پیکسل در ثانیه.
+  - **نوار لوگوی مشتریان:** همان infiniteslide v2، در `js/infiniteslide.js` بدون jQuery
+    (پلاگین اصلی `$.fn.infiniteslide` است و اینجا بازنویسی شده).
+    بچه‌ها کلون می‌شوند، فاصله تا اولین کلون اندازه گرفته می‌شود، و همان فاصله
+    با گام پیکسل کامل روی تیک GSAP جلو می‌رود تا ری‌استارت keyframe پرش ۱px نسازد.
+    سرعت ۸۰ پیکسل در ثانیه.
 - فوتر `footer.siteFooter` در صفحهٔ اصلی، فروشگاه و تماس یکی است.
 
 ## کارهای باقی‌مانده

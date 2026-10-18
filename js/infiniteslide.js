@@ -1,7 +1,12 @@
 /*
 infiniteslide v2 — vanilla port of https://github.com/woodroots/infiniteslidev2
-Same steps: flex row, clone the children, measure non-clone outer width (margin included),
-keyframes translate3d by that width, linear infinite. No jQuery.
+The original plugin is jQuery ($.fn.infiniteslide). This file is the same steps
+in plain JS: wrap, flex row, clone the children, measure one set.
+
+The original then loops a CSS @keyframes translate. That animation restarts at
+the end of every cycle, and on a row that is not on a whole pixel the restart
+reads as a 1px tick. Here the same distance is applied by hand, in whole pixels,
+on one continuous clock, so the wrap is just the next 1px step.
 */
 (function (window) {
 	'use strict';
@@ -25,7 +30,26 @@ keyframes translate3d by that width, linear infinite. No jQuery.
 		}, 0);
 	}
 
+	function snapToPixel(el) {
+		if (!el.hasAttribute('data-snap-base')) {
+			var current = parseFloat(window.getComputedStyle(el).marginTop) || 0;
+			el.setAttribute('data-snap-base', String(current));
+		}
+		el.style.marginTop = '';
+		var root = document.getElementById('smooth-content') || document.body;
+		var top = el.getBoundingClientRect().top - root.getBoundingClientRect().top;
+		var frac = top - Math.round(top);
+		if (Math.abs(frac) < 0.01) {
+			return;
+		}
+		var base = parseFloat(el.getAttribute('data-snap-base')) || 0;
+		el.style.marginTop = (base - frac) + 'px';
+	}
+
 	function infiniteslide(list, options) {
+		if (!list || list.getAttribute('data-infiniteslide') === 'ready') {
+			return;
+		}
 		var settings = {
 			speed: 100,
 			direction: 'left',
@@ -43,6 +67,7 @@ keyframes translate3d by that width, linear infinite. No jQuery.
 		var wrap = document.createElement('div');
 		wrap.className = 'infiniteslide_wrap';
 		wrap.style.overflow = 'hidden';
+		wrap.style.width = '100%';
 		list.parentNode.insertBefore(wrap, list);
 		wrap.appendChild(list);
 
@@ -53,29 +78,51 @@ keyframes translate3d by that width, linear infinite. No jQuery.
 		list.style.flexDirection = vertical ? 'column' : 'row';
 		list.style.width = 'max-content';
 		list.style.margin = '0';
+		list.style.padding = '0';
+		list.style.fontSize = '0';
+		list.style.lineHeight = '0';
+		list.style.willChange = 'transform';
+		list.style.backfaceVisibility = 'hidden';
+		list.style.animation = 'none';
 		Array.prototype.forEach.call(list.children, function (child) {
 			child.style.flex = 'none';
 			child.style.display = 'block';
 		});
 
-		var source = Array.prototype.slice.call(list.children);
+		var base = originals(list).slice();
+		var unit = vertical
+			? base.reduce(function (sum, child) {
+				return sum + child.offsetHeight;
+			}, 0)
+			: widthOf(list);
+		if (!unit) {
+			return;
+		}
+
 		var copies = settings.clone < 1 ? 1 : settings.clone;
+		var view = vertical ? wrap.clientHeight : wrap.clientWidth;
+		if (view) {
+			copies = Math.max(copies, Math.ceil(view / unit));
+		}
 		var n = 0;
 		while (n < copies) {
-			source.forEach(function (child) {
+			base.forEach(function (child) {
 				var clone = child.cloneNode(true);
 				clone.classList.add('infiniteslide_clone');
+				clone.style.flex = 'none';
+				clone.style.display = 'block';
 				list.appendChild(clone);
 			});
 			n += 1;
 		}
 
-		var distance = vertical
-			? originals(list).reduce(function (sum, child) {
-				return sum + child.offsetHeight;
-			}, 0)
-			: widthOf(list);
-		if (!distance) {
+		var distance = unit;
+		var firstClone = list.querySelector('.infiniteslide_clone');
+		if (!vertical && firstClone && base[0]) {
+			distance = firstClone.offsetLeft - base[0].offsetLeft;
+		}
+		distance = Math.round(distance);
+		if (distance < 1) {
 			return;
 		}
 
@@ -83,24 +130,75 @@ keyframes translate3d by that width, linear infinite. No jQuery.
 			wrap.style.height = distance + 'px';
 		}
 
-		var id = 'infiniteslide' + Date.now().toString(16) + Math.floor(Math.random() * 10000).toString(16);
-		var axis = vertical ? '0,-' + distance + 'px,0' : '-' + distance + 'px,0,0';
-		var style = document.createElement('style');
-		style.id = id + '_style';
-		style.textContent = '@keyframes ' + id + '{from{transform:translate3d(0,0,0);}to{transform:translate3d(' + axis + ');}}';
-		document.head.appendChild(style);
+		var marquee = list.closest('.logo-marquee');
+		if (marquee) {
+			snapToPixel(marquee);
+		}
 
-		var reverse = (settings.direction === 'right' || settings.direction === 'down') ? ' reverse' : '';
-		list.style.animation = id + ' ' + (distance / settings.speed) + 's linear 0s infinite' + reverse;
+		var reverse = settings.direction === 'right' || settings.direction === 'down';
+		var pos = 0;
+		var carry = 0;
+		var last = window.performance.now();
+		var paused = false;
+
+		function apply() {
+			var px = reverse ? pos : -pos;
+			list.style.transform = vertical
+				? 'translate3d(0,' + px + 'px,0)'
+				: 'translate3d(' + px + 'px,0,0)';
+		}
+
+		function frame() {
+			var now = window.performance.now();
+			var dt = now - last;
+			last = now;
+			if (paused) {
+				return;
+			}
+			if (dt < 0 || dt > 50) {
+				dt = 16.7;
+			}
+			carry += (dt / 1000) * settings.speed;
+			var step = Math.floor(carry);
+			if (step < 1) {
+				return;
+			}
+			carry -= step;
+			pos += step;
+			if (pos >= distance) {
+				pos %= distance;
+			}
+			apply();
+		}
+
+		if (window.gsap && window.gsap.ticker) {
+			window.gsap.ticker.add(frame);
+		} else {
+			var loop = function () {
+				frame();
+				window.requestAnimationFrame(loop);
+			};
+			window.requestAnimationFrame(loop);
+		}
 
 		if (settings.pauseonhover) {
 			list.addEventListener('mouseenter', function () {
-				list.style.animationPlayState = 'paused';
+				paused = true;
 			});
 			list.addEventListener('mouseleave', function () {
-				list.style.animationPlayState = 'running';
+				paused = false;
+				last = window.performance.now();
 			});
 		}
+
+		if (marquee && window.ScrollTrigger) {
+			window.ScrollTrigger.addEventListener('refresh', function () {
+				snapToPixel(marquee);
+			});
+		}
+
+		list.setAttribute('data-infiniteslide', 'ready');
+		list.setAttribute('data-infiniteslide-distance', String(distance));
 	}
 
 	window.infiniteslide = infiniteslide;

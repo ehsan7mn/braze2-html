@@ -862,19 +862,11 @@
 			return;
 		}
 		function start() {
-			var marquee = list.closest('.logo-marquee');
-			var sample = 92 + 28;
-			var count = list.children.length || 1;
-			var approx = count * sample;
-			var copies = 1;
-			if (marquee && approx) {
-				copies = Math.max(1, Math.ceil(marquee.clientWidth / approx));
-			}
 			window.infiniteslide(list, {
 				speed: 80,
 				direction: 'left',
 				pauseonhover: false,
-				clone: copies
+				clone: 1
 			});
 		}
 		if (document.readyState === 'complete') {
