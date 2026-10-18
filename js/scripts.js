@@ -357,12 +357,6 @@
 		area.addEventListener('mousemove', function (e) {
 			var box = area.getBoundingClientRect();
 			light.style.transform = 'matrix(1, 0, 0, 1, ' + (e.clientX - box.left) + ', ' + (e.clientY - box.top) + ')';
-			/* keep the blurred disc below the glass nav so it does not halo through it */
-			if (e.clientY < 200) {
-				light.style.opacity = '0';
-			} else if (light.classList.contains('lightBlock_active')) {
-				light.style.opacity = '';
-			}
 		});
 		area.addEventListener('mouseenter', function () {
 			light.classList.add('lightBlock_active');
@@ -920,6 +914,53 @@
 	}
 	/* end stats counters */
 
+	/* seamless logo strip: one measured copy, pixel translate, no per-frame filter */
+	(function initLogoMarquee() {
+		var marquee = document.querySelector('.logo-marquee');
+		var track = marquee && marquee.querySelector('.logo-track');
+		var set = track && track.querySelector('.logo-set');
+		if (!marquee || !track || !set) {
+			return;
+		}
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			return;
+		}
+		function start() {
+			if (track.querySelectorAll('.logo-set').length > 1) {
+				return;
+			}
+			var guard = 0;
+			var minW = marquee.clientWidth + 80;
+			while (set.offsetWidth < minW && guard < 6) {
+				set.insertAdjacentHTML('beforeend', set.innerHTML);
+				guard += 1;
+			}
+			var clone = set.cloneNode(true);
+			clone.setAttribute('aria-hidden', 'true');
+			track.appendChild(clone);
+			var distance = set.getBoundingClientRect().width;
+			if (!distance) {
+				return;
+			}
+			track.animate(
+				[
+					{ transform: 'translate3d(0, 0, 0)' },
+					{ transform: 'translate3d(' + (-distance) + 'px, 0, 0)' }
+				],
+				{
+					duration: (distance / 70) * 1000,
+					iterations: Infinity,
+					easing: 'linear'
+				}
+			);
+		}
+		if (document.readyState === 'complete') {
+			start();
+		} else {
+			window.addEventListener('load', start);
+		}
+	}());
+
 	/* start blog glitch — Lumna journal hover-effect, raw WebGL, no Three/GSAP */
 	var GLITCH_VERT = [
 		'attribute vec2 aPos;',
@@ -1147,6 +1188,31 @@
 		window.addEventListener('resize', resize);
 	}
 
+	/* standard WordPress caption: <div class="wp-caption"><img><p class="wp-caption-text"> */
+	Array.prototype.forEach.call(document.querySelectorAll('.wp-caption'), function (cap) {
+		if (cap.querySelector('.wp-caption__media')) {
+			return;
+		}
+		var img = cap.querySelector('img');
+		if (!img) {
+			return;
+		}
+		var media = document.createElement('div');
+		media.className = 'wp-caption__media blogItem__media';
+		media.setAttribute('data-displacement', 'img/heightMap.png');
+		var w = parseInt(img.getAttribute('width'), 10);
+		var h = parseInt(img.getAttribute('height'), 10);
+		if (w && h) {
+			media.style.aspectRatio = w + ' / ' + h;
+		}
+		img.classList.add('blogItem__img');
+		var clone = img.cloneNode(true);
+		clone.alt = '';
+		clone.setAttribute('aria-hidden', 'true');
+		img.parentNode.insertBefore(media, img);
+		media.appendChild(img);
+		media.appendChild(clone);
+	});
 	Array.prototype.forEach.call(document.querySelectorAll('.blogItem__media'), createBlogGlitch);
 	/* end blog glitch */
 
