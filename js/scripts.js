@@ -855,35 +855,32 @@
 			}
 		});
 	}
-	/* logo strip: integer-pixel shift so the loop seam does not snap 1px (Swiper loop does) */
+	/* infiniteslide v2, no jQuery — https://github.com/woodroots/infiniteslidev2 */
 	(function () {
-		var marquee = document.querySelector('.logo-marquee');
-		var track = marquee && marquee.querySelector('.logo-track');
-		var set = track && track.querySelector('.logo-set');
-		if (!marquee || !track || !set) {
+		var list = document.querySelector('.logo-marquee .infiniteslide');
+		if (!list || !window.infiniteslide) {
 			return;
 		}
-		function run() {
-			if (track.querySelectorAll('.logo-set').length > 1) {
-				return;
+		function start() {
+			var marquee = list.closest('.logo-marquee');
+			var sample = 92 + 28;
+			var count = list.children.length || 1;
+			var approx = count * sample;
+			var copies = 1;
+			if (marquee && approx) {
+				copies = Math.max(1, Math.ceil(marquee.clientWidth / approx));
 			}
-			var guard = 0;
-			while (set.offsetWidth < marquee.clientWidth + 92 && guard < 5) {
-				set.insertAdjacentHTML('beforeend', set.innerHTML);
-				guard += 1;
-			}
-			var clone = set.cloneNode(true);
-			clone.setAttribute('aria-hidden', 'true');
-			track.appendChild(clone);
-			var shift = set.offsetWidth;
-			track.style.setProperty('--logo-shift', shift + 'px');
-			track.style.setProperty('--logo-dur', (shift / 70) + 's');
-			track.classList.add('is-run');
+			window.infiniteslide(list, {
+				speed: 80,
+				direction: 'left',
+				pauseonhover: false,
+				clone: copies
+			});
 		}
 		if (document.readyState === 'complete') {
-			run();
+			start();
 		} else {
-			window.addEventListener('load', run);
+			window.addEventListener('load', start);
 		}
 	}());
 	var reviewsLayout = document.querySelector('.reviews-layout');

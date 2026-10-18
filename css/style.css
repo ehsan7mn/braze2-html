@@ -1534,30 +1534,19 @@ a.footerSocial__btn:hover i::before {
 	overflow: hidden;
 	direction: ltr;
 }
-.logo-track {
-	display: flex;
-	width: max-content;
+.infiniteslide {
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
-.logo-track.is-run {
-	animation: logo-run var(--logo-dur, 40s) linear infinite;
+.infiniteslide > li {
+	margin: 0 56px 0 0;
 }
-.logo-set {
-	display: flex;
-	align-items: center;
-	gap: 56px;
-	padding-inline-end: 56px;
-	flex: none;
-}
-.logo-set img {
+.infiniteslide img {
 	display: block;
 	width: 92px;
 	height: 92px;
 	object-fit: contain;
-	flex: none;
-}
-@keyframes logo-run {
-	from { transform: translate3d(0, 0, 0); }
-	to { transform: translate3d(calc(var(--logo-shift) * -1), 0, 0); }
 }
 .logo-marquee::before,
 .logo-marquee::after {
