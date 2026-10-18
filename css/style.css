@@ -413,22 +413,19 @@ html.noMouseEffects .lightBlock {
 	transform-origin: top center;
 	transition: opacity .25s ease-in-out, transform .25s ease-in-out, visibility 0s linear .25s;
 }
-/* glass on the menu itself so blur and text fade as one layer */
+/* blur stays on ::before, not the ul — a backdrop-filter on the ul
+   becomes a backdrop root and the nested submenu cannot blur the page */
 .subMenu.glass {
-	background: var(--glass);
-	-webkit-backdrop-filter: blur(18px);
-	backdrop-filter: blur(18px);
-	isolation: isolate;
-}
-.subMenu.glass::before {
-	content: none;
-	display: none;
+	background: transparent;
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
 }
 .mainMenu li:hover > .subMenu {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
-	transform: perspective(300px) rotateX(0deg);
+	/* none, not rotateX(0): a transform on the parent blocks the child glass */
+	transform: none;
 	transition: opacity .25s ease-in-out, transform .25s ease-in-out, visibility 0s;
 }
 .subMenu > li {
