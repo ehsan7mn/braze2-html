@@ -20,6 +20,7 @@
 	}
 
 	var smoother = null;
+	var onSmootherScroll = function () {};
 
 	if (window.gsap && window.ScrollTrigger) {
 		window.gsap.registerPlugin(window.ScrollTrigger);
@@ -35,7 +36,10 @@
 			smooth: 2,
 			effects: false,
 			smoothTouch: 0.1,
-			normalizeScroll: true
+			normalizeScroll: true,
+			onUpdate: function () {
+				onSmootherScroll();
+			}
 		});
 	}
 
@@ -654,15 +658,13 @@
 	}
 
 	var navOuter = document.querySelector('.navOuter');
-	function updateNavOnLight() {
-		/* nav stays glass at all scroll positions (no isOnLight white bar) */
-		if (navOuter) {
-			navOuter.classList.remove('isOnLight');
-		}
+	/* nav stays glass at all scroll positions (no isOnLight white bar) */
+	if (navOuter) {
+		navOuter.classList.remove('isOnLight');
 	}
 
 	var ticking = false;
-	var lastPaintScroll = null;
+	var paintedScroll = null;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
 	var productsList = document.querySelector('.productsSec .col-lg-7');
@@ -789,9 +791,43 @@
 		});
 	}
 
+	var blogSideTrigger = null;
+
+	function initBlogSidePin() {
+		var side = document.querySelector('.blogSide');
+		if (blogSideTrigger) {
+			blogSideTrigger.kill();
+			blogSideTrigger = null;
+		}
+		if (!side) {
+			return;
+		}
+		side.style.width = '';
+		var main = document.querySelector('.blogLayout .col-lg-8');
+		if (!window.ScrollTrigger || !main || window.innerWidth < 992) {
+			return;
+		}
+		/* #smooth-content is transformed, so CSS sticky cannot stick.
+		   Pin only this sidebar; the products pin is untouched. */
+		var top = 100;
+		blogSideTrigger = window.ScrollTrigger.create({
+			trigger: side,
+			start: 'top ' + top + 'px',
+			endTrigger: main,
+			end: function () {
+				return 'bottom ' + (top + side.offsetHeight) + 'px';
+			},
+			pin: true,
+			pinSpacing: false,
+			pinReparent: false,
+			invalidateOnRefresh: true
+		});
+	}
+
 	function refreshScrollLayout() {
 		syncProductsPinHeight();
 		initProductsPin();
+		initBlogSidePin();
 		initParallaxTriggers();
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
@@ -799,16 +835,14 @@
 	}
 
 	function update() {
-		var viewport = window.innerHeight;
 		var scroll = getScroll();
-		/* skip the layout reads while the page is still — they were hitching the logo strip */
-		if (lastPaintScroll === null || Math.abs(scroll - lastPaintScroll) > 0.5) {
-			lastPaintScroll = scroll;
+		if (scroll !== paintedScroll) {
+			paintedScroll = scroll;
+			var viewport = window.innerHeight;
 			updateVisionCards(viewport);
 			updateRevealTitles(viewport);
 			updateDissolve();
 		}
-		updateNavOnLight();
 		ticking = false;
 	}
 
@@ -819,22 +853,22 @@
 		}
 	}
 
+	onSmootherScroll = requestUpdate;
 	if (!smoother) {
 		window.addEventListener('scroll', requestUpdate, { passive: true });
 	}
 	window.addEventListener('resize', function () {
+		paintedScroll = null;
 		refreshScrollLayout();
 		requestUpdate();
 	});
 	window.addEventListener('load', function () {
+		paintedScroll = null;
 		refreshScrollLayout();
 		window.setTimeout(refreshScrollLayout, 150);
 		window.setTimeout(refreshScrollLayout, 600);
 		requestUpdate();
 	});
-	if (window.gsap) {
-		window.gsap.ticker.add(requestUpdate);
-	}
 	refreshScrollLayout();
 	update();
 	/* end scroll driven effects */

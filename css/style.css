@@ -1468,7 +1468,7 @@ a.footerSocial__btn:hover i::before {
 	padding: 30px 30px 36px;
 	background: var(--bg_soft);
 	color: #fff;
-	border: 1px solid var(--glass_border);
+	border: 0;
 	border-radius: var(--radius2);
 	overflow: hidden;
 	transition: height .45s ease;
@@ -1535,21 +1535,17 @@ a.footerSocial__btn:hover i::before {
 	margin-top: 36px;
 	padding: 8px 0;
 	background: var(--bg);
-	overflow: hidden;
+	overflow: visible;
 	direction: ltr;
 }
 .infiniteslide_wrap {
-	overflow: hidden;
-	width: 100%;
+	overflow: visible;
+	clip-path: inset(0);
 }
 .infiniteslide {
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	font-size: 0;
-	line-height: 0;
-	will-change: transform;
-	backface-visibility: hidden;
 }
 .infiniteslide > li {
 	margin: 0 56px 0 0;
@@ -2263,6 +2259,12 @@ html.noMouseEffects .cursor {
 }
 .blogLayout {
 	padding-top: 28px;
+}
+@media (min-width: 992px) {
+	html.noScrollSmoother .blogSide {
+		position: sticky;
+		top: 100px;
+	}
 }
 .blogWidget,
 .blogSlot {
