@@ -212,9 +212,6 @@ section {
 .lightBlock_active {
 	opacity: .8;
 }
-html.noMouseEffects .lightBlock {
-	display: none !important;
-}
 /* end lightBlock */
 
 /* start main button — https://codepen.io/chancesq/pen/qBOyQoW
@@ -1537,24 +1534,24 @@ a.footerSocial__btn:hover i::before {
 	overflow: hidden;
 	direction: ltr;
 }
-.logo-track {
-	display: flex;
-	width: max-content;
+.logo-swiper {
+	overflow: hidden;
 }
-.logo-set {
-	display: flex;
-	align-items: center;
-	gap: 56px;
-	padding-inline-end: 56px;
-	flex: none;
+.logo-swiper .swiper-wrapper {
+	transition-timing-function: linear !important;
 }
-.logo-set img {
+.logo-swiper .swiper-slide {
 	width: 92px;
 	height: 92px;
-	margin: 0;
-	object-fit: contain;
-	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.logo-swiper .swiper-slide img {
 	display: block;
+	width: 92px;
+	height: 92px;
+	object-fit: contain;
 }
 .logo-marquee::before,
 .logo-marquee::after {
@@ -2234,12 +2231,6 @@ html.noMouseEffects .cursor {
 	color: var(--primary);
 	border-color: rgba(255, 102, 0, .45);
 	background: rgba(255, 102, 0, .12);
-}
-.contactSoc--bale {
-	color: #21a652;
-}
-.contactSoc--bale:hover {
-	color: #2ecc71;
 }
 .contactSoc--eitaa {
 	color: #e89142;
