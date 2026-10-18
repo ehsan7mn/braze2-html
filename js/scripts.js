@@ -662,6 +662,7 @@
 	}
 
 	var ticking = false;
+	var lastPaintScroll = null;
 	var productsPin = document.querySelector('.productsPin');
 	var productsHead = document.querySelector('.productsHead');
 	var productsList = document.querySelector('.productsSec .col-lg-7');
@@ -799,9 +800,14 @@
 
 	function update() {
 		var viewport = window.innerHeight;
-		updateVisionCards(viewport);
-		updateRevealTitles(viewport);
-		updateDissolve();
+		var scroll = getScroll();
+		/* skip the layout reads while the page is still — they were hitching the logo strip */
+		if (lastPaintScroll === null || Math.abs(scroll - lastPaintScroll) > 0.5) {
+			lastPaintScroll = scroll;
+			updateVisionCards(viewport);
+			updateRevealTitles(viewport);
+			updateDissolve();
+		}
 		updateNavOnLight();
 		ticking = false;
 	}
