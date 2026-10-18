@@ -3,7 +3,7 @@
 	'use strict';
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
-	var ENABLE_SCROLL_SMOOTHER = false;
+	var ENABLE_SCROLL_SMOOTHER = true;
 	/* Lumna cursor, lightBlock follow, shop hover-this — off for testing */
 	var ENABLE_MOUSE_EFFECTS = false;
 
@@ -660,21 +660,10 @@
 
 	var navOuter = document.querySelector('.navOuter');
 	function updateNavOnLight() {
-		if (!navOuter) {
-			return;
+		/* nav stays glass at all scroll positions (no isOnLight white bar) */
+		if (navOuter) {
+			navOuter.classList.remove('isOnLight');
 		}
-		var scrolled = getScroll() > 72;
-		if (!heroSec) {
-			navOuter.classList.toggle('isOnLight', scrolled);
-			return;
-		}
-		var navBox = navOuter.getBoundingClientRect();
-		var heroBox = heroSec.getBoundingClientRect();
-		var grayBandTop = heroBox.bottom - 140;
-		var onTail = navBox.bottom > grayBandTop && navBox.top < heroBox.bottom + 8;
-		var grayFromDissolve = heroBox.bottom - clamp(dissolveProgress * 1.2, 0, 1) * heroBox.height;
-		var onDissolve = navBox.bottom > grayFromDissolve && navBox.top < heroBox.bottom;
-		navOuter.classList.toggle('isOnLight', scrolled || onTail || onDissolve);
 	}
 
 	var ticking = false;

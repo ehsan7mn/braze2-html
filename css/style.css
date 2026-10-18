@@ -465,36 +465,6 @@ html.noMouseEffects .lightBlock {
 	transform-origin: right center;
 }
 
-/* scrolled / on light: solid white nav + submenus (default top = glass) */
-.navOuter.isOnLight .mainNav.glass::before,
-.navOuter.isOnLight .subMenu.glass::before {
-	background: #fff;
-	-webkit-backdrop-filter: none;
-	backdrop-filter: none;
-}
-.navOuter.isOnLight .mainMenu > li > a,
-.navOuter.isOnLight .navIcon {
-	color: #1a1a1a;
-}
-.navOuter.isOnLight .mainMenu > li > a:hover,
-.navOuter.isOnLight .mainMenu > li:hover > a {
-	color: var(--primary);
-}
-.navOuter.isOnLight .navIcon:hover {
-	color: var(--primary);
-}
-.navOuter.isOnLight .subMenu > li > a {
-	color: #1a1a1a;
-}
-.navOuter.isOnLight .subMenu > li:hover > a {
-	color: var(--primary);
-}
-.navOuter.isOnLight .navLogo .logoLight {
-	display: none;
-}
-.navOuter.isOnLight .navLogo .logoDark {
-	display: block;
-}
 /* end header */
 
 /* start hero slider */
