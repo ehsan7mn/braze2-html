@@ -3,7 +3,7 @@
 	'use strict';
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
-	var ENABLE_SCROLL_SMOOTHER = true;
+	var ENABLE_SCROLL_SMOOTHER = false;
 
 	var clamp = function (v, min, max) {
 		return v < min ? min : (v > max ? max : v);
