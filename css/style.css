@@ -409,10 +409,11 @@ html.noMouseEffects .lightBlock {
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transition: opacity .28s ease, visibility 0s linear .28s;
+	transform: perspective(300px) rotateX(-18deg);
+	transform-origin: top center;
+	transition: opacity .25s ease-in-out, transform .25s ease-in-out, visibility 0s linear .25s;
 }
-/* glass on the menu itself so blur and text fade as one layer
-   (a separate ::before composites later than the links) */
+/* glass on the menu itself so blur and text fade as one layer */
 .subMenu.glass {
 	background: var(--glass);
 	-webkit-backdrop-filter: blur(18px);
@@ -427,7 +428,8 @@ html.noMouseEffects .lightBlock {
 	opacity: 1;
 	visibility: visible;
 	pointer-events: auto;
-	transition: opacity .28s ease, visibility 0s;
+	transform: perspective(300px) rotateX(0deg);
+	transition: opacity .25s ease-in-out, transform .25s ease-in-out, visibility 0s;
 }
 .subMenu > li {
 	position: relative;
@@ -464,11 +466,11 @@ html.noMouseEffects .lightBlock {
 	line-height: 28px;
 	color: var(--text);
 	background: transparent;
-	transition: color .2s ease, background-color .2s ease;
+	transition: color .3s;
 }
 .subMenu > li:hover > a {
 	color: var(--primary);
-	background: rgba(255, 255, 255, .06);
+	background: transparent;
 }
 .subMenu .subMenu {
 	top: 0;
