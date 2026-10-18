@@ -35,7 +35,7 @@ body {
     --glass:rgba(255, 255, 255, 0.06);
     --glass_strong:rgba(255, 255, 255, 0.1);
     --glass_border:rgba(255, 255, 255, 0.12);
-    --cover:rgba(0, 0, 0, 0.55);
+    --cover:rgba(0, 0, 0, 0.7);
 	--green1:#25d366;
 	--green2:#1a952e;
 	--gray1:#f0f0f0;
@@ -210,7 +210,7 @@ section {
 	transition: opacity 1.2s ease;
 }
 .lightBlock_active {
-	opacity: .8;
+	opacity: .9;
 }
 /* end lightBlock */
 
