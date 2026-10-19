@@ -584,14 +584,17 @@
 					}
 				);
 			} else if (item.classList.contains('consultSec__bg')) {
+				var consult = item.closest('.consultSec') || holder;
 				tween = window.gsap.fromTo(
 					item,
-					{ backgroundPosition: '50% 0%' },
+					{ y: 0, force3D: true },
 					{
-						backgroundPosition: '50% 100%',
+						y: function () {
+							return holder.offsetHeight - item.offsetHeight;
+						},
 						ease: 'none',
 						scrollTrigger: {
-							trigger: triggerEl,
+							trigger: consult,
 							start: 'top bottom',
 							end: 'bottom top',
 							scrub: true,

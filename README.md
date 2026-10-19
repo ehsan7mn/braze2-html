@@ -236,3 +236,14 @@ jQuery استفاده نشده است؛ همه کدها Vanilla JS هستند.
   - منوی موبایل: آف‌کنواس بوت‌استرپ، کاور مشکی، لوگو و ضربدر بالای پنل، لینک‌ها با بوردر زیرشان.
 - <https://tympanus.net/Blueprints/MultiLevelMenu>
   - اسلاید سطح‌های زیرمنو. هر منوی والد اولین لینک زیرمجموعه خودش هم هست تا در موبایل صفحه همان منو باز بماند.
+- <https://tablonamvar.com/>
+  - سکشن اعداد. در موبایل عددها زیر هم می‌آیند، با فاصله عمودی کمتر.
+- <https://pooyanbattery.ir/product/telcopower-42-amp-battery/>
+  - داده صفحه محصول: عنوان، تکنولوژی ساخت، ولتاژ، ظرفیت و موارد استفاده.
+- <https://uithemez.com/i/Vexium/project-details.html>
+  - چهار مشخصه کنار هم، کلاس `info`.
+- <https://uithemez.com/i/Lumna/project-details.html>
+  - عکس پارالکس وسط صفحه و دکمه پخش روی آن. ارتفاع اینجا ۵۰۰ پیکسل است.
+- <https://uithemez.com/i/Lumna/portfolio-elegant.html>
+  - گالری عکس محصول. با هاور عرض یکی از عکس‌ها بیشتر می‌شود.
+
