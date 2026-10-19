@@ -37,6 +37,8 @@
 			effects: false,
 			smoothTouch: 2,
 			normalizeScroll: true,
+			/* fractional translates antialias the hero and consult edges into a 1px seam */
+			wholePixels: true,
 			onUpdate: function () {
 				onSmootherScroll();
 			}
