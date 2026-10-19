@@ -37,8 +37,6 @@
 			effects: false,
 			smoothTouch: 2,
 			normalizeScroll: true,
-			/* fractional translates antialias the hero and consult edges into a 1px seam */
-			wholePixels: true,
 			onUpdate: function () {
 				onSmootherScroll();
 			}
@@ -967,32 +965,8 @@
 		});
 	}
 
-	/* wholePixels rounds the page translate, but a section can still sit a fraction of a
-	   pixel down the page. That leftover is what shimmers at the top of the consult photo. */
-	function snapPaintedEdges() {
-		var hero = document.querySelector('.heroSec');
-		if (hero) {
-			hero.style.height = '';
-			var heroHeight = hero.getBoundingClientRect().height;
-			var heroRounded = Math.round(heroHeight);
-			if (Math.abs(heroHeight - heroRounded) >= 0.05) {
-				hero.style.height = heroRounded + 'px';
-			}
-		}
-		var consult = document.querySelector('.consultSec');
-		if (consult) {
-			consult.style.marginTop = '';
-			var top = consult.getBoundingClientRect().top + getScroll();
-			var frac = top - Math.round(top);
-			if (Math.abs(frac) >= 0.05) {
-				consult.style.marginTop = (-frac).toFixed(4) + 'px';
-			}
-		}
-	}
-
 	function refreshScrollLayout() {
 		syncProductsPinHeight();
-		snapPaintedEdges();
 		initProductsPin();
 		initBlogSidePin();
 		initAboutCards();

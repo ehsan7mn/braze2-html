@@ -1094,7 +1094,7 @@ a.titleLink:hover {
 	align-items: center;
 	padding: 0;
 	height: 500px;
-	background: #000;
+	background: var(--bg);
 	border: 0;
 	outline: 0;
 	overflow: hidden;
@@ -1126,7 +1126,7 @@ a.titleLink:hover {
 	background-repeat: no-repeat;
 }
 .consultSec > .blackCover {
-	inset: 0;
+	inset: -2px;
 }
 .consultSec > .container {
 	position: relative;
