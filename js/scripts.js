@@ -35,7 +35,7 @@
 		smoother = window.ScrollSmoother.create({
 			smooth: 2,
 			effects: false,
-			smoothTouch: 0.1,
+			smoothTouch: 2,
 			normalizeScroll: true,
 			onUpdate: function () {
 				onSmootherScroll();
