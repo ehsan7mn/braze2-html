@@ -585,12 +585,13 @@
 				);
 			} else if (item.classList.contains('consultSec__bg')) {
 				var consult = item.closest('.consultSec') || holder;
+				/* 24px of the photo stays outside the clip so the top edge never snaps */
 				tween = window.gsap.fromTo(
 					item,
 					{ y: 0, force3D: true },
 					{
 						y: function () {
-							return holder.offsetHeight - item.offsetHeight;
+							return Math.round(holder.offsetHeight - item.offsetHeight + 48);
 						},
 						ease: 'none',
 						scrollTrigger: {
@@ -705,8 +706,11 @@
 		if (!drawDissolve || !heroSec) {
 			return;
 		}
-		/* Vexium script-hero1.js: (scroll / (heroH - viewport)) * 0.3, capped at 1.1 */
-		var next = Math.min((scroll / heroMaxScroll) * DISSOLVE_SPEED, 1.1);
+		/* at 100vh there is no room to dissolve, so the first pixel would paint the whole slide gray */
+		var next = 0;
+		if (window.innerWidth > 768) {
+			next = Math.min((scroll / heroMaxScroll) * DISSOLVE_SPEED, 1.1);
+		}
 		if (next === dissolveProgress) {
 			return;
 		}

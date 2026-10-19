@@ -1109,24 +1109,24 @@ a.titleLink:hover {
 }
 .consultSec__clip {
 	position: absolute;
-	inset: -1px;
+	inset: 0;
 	z-index: 1;
 	overflow: hidden;
 	pointer-events: none;
 }
 .consultSec__bg {
 	position: absolute;
-	top: 0;
+	top: -24px;
 	left: 0;
 	z-index: 1;
 	width: 100%;
-	height: 800px;
+	height: 848px;
 	background-position: center center;
 	background-size: cover;
 	background-repeat: no-repeat;
 }
 .consultSec > .blackCover {
-	inset: -3px;
+	inset: 0;
 }
 .consultSec > .container {
 	position: relative;
@@ -3157,21 +3157,6 @@ html.noMouseEffects .cursor {
 	background-size: cover;
 	background-repeat: no-repeat;
 }
-.prodGallery__cap {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 10px;
-	margin-top: 12px;
-	padding: 0 8px;
-	color: rgba(255, 255, 255, .7);
-	font-size: 14px;
-}
-.prodGallery__cap strong {
-	color: #fff;
-	font-size: 15px;
-	font-weight: 600;
-}
 /* end product page */
 
 /* start colors table */
@@ -3239,6 +3224,10 @@ html.noMouseEffects .cursor {
 	.heroSec {
 		height: 100vh;
 	}
+	.dissolveCanvas,
+	.dissolveFallback {
+		display: none;
+	}
 	.heroArrow {
 		display: none;
 	}
@@ -3264,7 +3253,11 @@ html.noMouseEffects .cursor {
 		height: 1px;
 		margin: 10px auto;
 	}
-	.consult-photo {
+	.stats-wrap {
+		background: none;
+	}
+	.consult-photo,
+	.consult-fab {
 		display: none;
 	}
 	.consult-bg {
@@ -3300,14 +3293,22 @@ html.noMouseEffects .cursor {
 	.aboutPage .stats-section {
 		padding-bottom: 75px;
 	}
-	.consult-section,
-	.reviews-section + .consult-section {
+	.consult-section {
+		padding-bottom: 0;
+	}
+	.reviews-section + .consult-section.consult-section--home {
 		padding-top: 75px;
-		padding-bottom: 75px;
+	}
+	.consult-section:not(.consult-section--home) {
+		padding-top: 0;
+		padding-bottom: 20px;
 	}
 	.pageCrumbs,
 	.shopHero {
 		padding-top: 100px;
+	}
+	.shopHero {
+		padding-bottom: 50px;
 	}
 	.shopHero__title,
 	.contactHero__title {
@@ -3345,6 +3346,12 @@ html.noMouseEffects .cursor {
 	}
 	.prodHead {
 		align-items: flex-start;
+	}
+	.prodViews {
+		display: none;
+	}
+	.prodInfo__item {
+		margin-bottom: 20px;
 	}
 }
 
