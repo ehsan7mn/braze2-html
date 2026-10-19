@@ -3,7 +3,7 @@
 	'use strict';
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
-	var ENABLE_SCROLL_SMOOTHER = false;
+	var ENABLE_SCROLL_SMOOTHER = true;
 	/* Lumna cursor, lightBlock follow, shop hover-this — off for testing */
 	var ENABLE_MOUSE_EFFECTS = false;
 
@@ -609,31 +609,57 @@
 		});
 	}
 
-	function updateVisionCards(viewport) {
-		var scroll = getScroll();
+	var visionLayout = [];
+	var revealLayout = [];
+	var heroMaxScroll = 1;
+
+	/* positions are stable until layout changes. Reading them on every scroll
+	   forced a reflow that pulled the logo animation off the compositor. */
+	function measureScrollEffects() {
+		visionLayout = [];
 		Array.prototype.forEach.call(visionCards, function (card) {
-			var side = card.getAttribute('data-vision-card');
-			if (side === 'center') {
+			visionLayout.push({
+				el: card,
+				side: card.getAttribute('data-vision-card'),
+				top: offsetTopInPage(card),
+				paint: ''
+			});
+		});
+		revealLayout = [];
+		Array.prototype.forEach.call(revealTitles, function (title) {
+			revealLayout.push({
+				top: offsetTopInPage(title),
+				words: title.querySelectorAll('.word'),
+				paint: []
+			});
+		});
+		heroMaxScroll = heroSec ? Math.max(heroSec.offsetHeight - window.innerHeight, 1) : 1;
+	}
+
+	function updateVisionCards(viewport, scroll) {
+		visionLayout.forEach(function (item) {
+			if (item.side === 'center') {
 				return;
 			}
-			var top = offsetTopInPage(card);
-			var progress = clamp((scroll + viewport * 0.85 - top) / (viewport * 0.6), 0, 1);
+			var progress = clamp((scroll + viewport * 0.85 - item.top) / (viewport * 0.6), 0, 1);
 			var rest = 1 - progress;
 			/* the two outer cards start stacked on the middle one and fan out while scrolling */
-			var shift = side === 'left' ? 100 : -100;
-			var tilt = side === 'left' ? -2 : 2;
-			card.style.transform = 'translateX(' + (shift * rest).toFixed(2) + '%) rotate(' + (tilt * rest).toFixed(2) + 'deg)';
+			var shift = item.side === 'left' ? 100 : -100;
+			var tilt = item.side === 'left' ? -2 : 2;
+			var next = 'translateX(' + (shift * rest).toFixed(2) + '%) rotate(' + (tilt * rest).toFixed(2) + 'deg)';
+			if (next === item.paint) {
+				return;
+			}
+			item.paint = next;
+			item.el.style.transform = next;
 		});
 	}
 
-	function updateRevealTitles(viewport) {
-		var scroll = getScroll();
-		Array.prototype.forEach.call(revealTitles, function (title) {
-			var words = title.querySelectorAll('.word');
-			var top = offsetTopInPage(title);
-			var progress = clamp((scroll + viewport * 0.6 - top) / (viewport * 0.2), 0, 1);
-			var total = words.length;
-			Array.prototype.forEach.call(words, function (word, index) {
+	function updateRevealTitles(viewport, scroll) {
+		revealLayout.forEach(function (item) {
+			var progress = clamp((scroll + viewport * 0.6 - item.top) / (viewport * 0.2), 0, 1);
+			var total = item.words.length;
+			Array.prototype.forEach.call(item.words, function (word, index) {
 				var start = index / total;
 				var end = (index + 1) / total;
 				var opacity = 0.2;
@@ -642,18 +668,26 @@
 				} else if (progress > start) {
 					opacity = Math.max((progress - start) / (end - start), 0.2);
 				}
-				word.style.opacity = opacity;
+				var next = String(opacity);
+				if (item.paint[index] === next) {
+					return;
+				}
+				item.paint[index] = next;
+				word.style.opacity = next;
 			});
 		});
 	}
 
-	function updateDissolve() {
+	function updateDissolve(scroll) {
 		if (!drawDissolve || !heroSec) {
 			return;
 		}
 		/* Vexium script-hero1.js: (scroll / (heroH - viewport)) * 0.3, capped at 1.1 */
-		var maxScroll = Math.max(heroSec.offsetHeight - window.innerHeight, 1);
-		dissolveProgress = Math.min((getScroll() / maxScroll) * DISSOLVE_SPEED, 1.1);
+		var next = Math.min((scroll / heroMaxScroll) * DISSOLVE_SPEED, 1.1);
+		if (next === dissolveProgress) {
+			return;
+		}
+		dissolveProgress = next;
 		drawDissolve(dissolveProgress);
 	}
 
@@ -832,6 +866,7 @@
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
 		}
+		measureScrollEffects();
 	}
 
 	function update() {
@@ -839,9 +874,9 @@
 		if (scroll !== paintedScroll) {
 			paintedScroll = scroll;
 			var viewport = window.innerHeight;
-			updateVisionCards(viewport);
-			updateRevealTitles(viewport);
-			updateDissolve();
+			updateVisionCards(viewport, scroll);
+			updateRevealTitles(viewport, scroll);
+			updateDissolve(scroll);
 		}
 		ticking = false;
 	}
