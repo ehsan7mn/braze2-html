@@ -1301,8 +1301,9 @@ a.titleLink:hover {
 	top: -50%;
 	right: 0;
 	width: 100%;
-	height: 15vh;
-	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 75%, #fff 100%);
+	height: 100%;
+	/* 15vh bar at the top of a full-height box, so translateY(%) matches the old top offset */
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #fff 75%, #fff 100%) top / 100% 15vh no-repeat;
 	animation: run 7s 0s infinite;
 	animation-fill-mode: forwards;
 	animation-timing-function: cubic-bezier(.4, .26, 0, .97);
@@ -1332,11 +1333,12 @@ a.titleLink:hover {
 	animation-delay: 2.5s;
 }
 @keyframes run {
+	/* moving top forced a layout pass every frame and dropped the logo strip */
 	0% {
-		top: -50%;
+		transform: translate3d(0, 0, 0);
 	}
 	100% {
-		top: 110%;
+		transform: translate3d(0, 160%, 0);
 	}
 }
 .footerLogo {
@@ -1621,6 +1623,8 @@ a.footerSocial__btn:hover i::before {
 	border-radius: inherit;
 	background: conic-gradient(from var(--border-angle), transparent 0%, var(--primary) 18%, var(--primary) 48%, transparent 70%);
 	animation: border-spin 4s linear infinite;
+	/* keep this paint off the reviews row, which sits on the logo strip */
+	transform: translateZ(0);
 	pointer-events: none;
 	-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
 	mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
