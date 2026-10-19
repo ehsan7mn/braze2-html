@@ -3,7 +3,7 @@
 	'use strict';
 
 	/* toggle only — parallax / pin / other scroll FX unchanged */
-	var ENABLE_SCROLL_SMOOTHER = true;
+	var ENABLE_SCROLL_SMOOTHER = false;
 	/* Lumna cursor, lightBlock follow, shop hover-this — off for testing */
 	var ENABLE_MOUSE_EFFECTS = false;
 
