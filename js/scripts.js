@@ -563,7 +563,7 @@
 			var triggerEl = holder;
 			var tween;
 			/* consult: bg-position only (no Y on clipped layer — products/footer unchanged below) */
-			if (item.classList.contains('consultSec__bg')) {
+			if (item.classList.contains('consultSec__bg') || item.classList.contains('roadmapSec__bg')) {
 				tween = window.gsap.fromTo(
 					item,
 					{ backgroundPosition: '50% 0%' },
@@ -858,10 +858,98 @@
 		});
 	}
 
+	var aboutCardTween = null;
+	var certSettleTween = null;
+
+	function initAboutCards() {
+		if (aboutCardTween) {
+			aboutCardTween.kill();
+			aboutCardTween = null;
+		}
+		var root = document.querySelector('.aboutSticky');
+		if (!root || !window.gsap || !window.ScrollTrigger) {
+			return;
+		}
+		var header = root.querySelector('.aboutSticky__title');
+		var container = root.querySelector('.aboutCards');
+		var stage = root.querySelector('.aboutSticky__stage');
+		var cards = root.querySelectorAll('.aboutCard');
+		if (!header || !container || !stage) {
+			return;
+		}
+		if (window.innerWidth < 1000) {
+			window.gsap.set([header, container, cards], { clearProps: 'all' });
+			return;
+		}
+		var tl = window.gsap.timeline({
+			scrollTrigger: {
+				trigger: stage,
+				start: 'top top',
+				end: function () {
+					return '+=' + (window.innerHeight * 4);
+				},
+				scrub: 1,
+				pin: true,
+				anticipatePin: 0,
+				invalidateOnRefresh: true
+			}
+		});
+		tl.fromTo(header, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, 0.1);
+		tl.fromTo(container, { width: '100%' }, { width: '80%', duration: 0.3 }, 0);
+		tl.to(container, { gap: '60px', duration: 0.3, ease: 'power3.out' }, 0.35);
+		tl.to(cards, { borderRadius: '20px', duration: 0.3 }, 0.35);
+		tl.to(cards, {
+			rotationY: 180,
+			duration: 0.6,
+			stagger: 0.1,
+			ease: 'power2.inOut'
+		}, 0.7);
+		tl.to(['#about-card-1', '#about-card-3'], {
+			y: 30,
+			rotationZ: function (i) {
+				return [-15, 15][i];
+			},
+			duration: 0.6,
+			ease: 'power2.inOut'
+		}, 0.7);
+		aboutCardTween = tl;
+	}
+
+	function initCertSettle() {
+		if (certSettleTween) {
+			certSettleTween.kill();
+			certSettleTween = null;
+		}
+		var item = document.querySelector('.certGallery__item.is-raised');
+		if (!item || !window.gsap || !window.ScrollTrigger) {
+			return;
+		}
+		if (window.innerWidth < 992) {
+			window.gsap.set(item, { clearProps: 'transform' });
+			return;
+		}
+		certSettleTween = window.gsap.fromTo(item, {
+			y: -80,
+			rotate: -5
+		}, {
+			y: 0,
+			rotate: 0,
+			ease: 'power2.out',
+			scrollTrigger: {
+				trigger: '.certGallery',
+				start: 'top 75%',
+				end: 'top 35%',
+				scrub: 1.5
+			}
+		});
+	}
+
 	function refreshScrollLayout() {
 		syncProductsPinHeight();
 		initProductsPin();
 		initBlogSidePin();
+		initAboutCards();
+		initCertSettle();
 		initParallaxTriggers();
 		if (window.ScrollTrigger) {
 			window.ScrollTrigger.refresh();
