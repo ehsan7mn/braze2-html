@@ -557,13 +557,33 @@
 				return;
 			}
 			var extra = item.offsetHeight - holder.offsetHeight;
-			if (extra <= 0) {
+			var isRoad = item.classList.contains('roadmapSec__bg');
+			if (extra <= 0 && !isRoad) {
 				return;
 			}
 			var triggerEl = holder;
 			var tween;
 			/* consult: bg-position only (no Y on clipped layer — products/footer unchanged below) */
-			if (item.classList.contains('consultSec__bg') || item.classList.contains('roadmapSec__bg')) {
+			if (item.classList.contains('roadmapSec__bg')) {
+				var road = item.closest('.roadmapSec') || holder;
+				tween = window.gsap.fromTo(
+					item,
+					{ y: 0, force3D: true },
+					{
+						y: function () {
+							return holder.offsetHeight - item.offsetHeight;
+						},
+						ease: 'none',
+						scrollTrigger: {
+							trigger: road,
+							start: 'top bottom',
+							end: 'bottom top',
+							scrub: true,
+							invalidateOnRefresh: true
+						}
+					}
+				);
+			} else if (item.classList.contains('consultSec__bg')) {
 				tween = window.gsap.fromTo(
 					item,
 					{ backgroundPosition: '50% 0%' },
@@ -884,18 +904,12 @@
 		var tl = window.gsap.timeline({
 			scrollTrigger: {
 				trigger: stage,
-				start: 'top top',
-				end: function () {
-					return '+=' + (window.innerHeight * 4);
-				},
-				scrub: 1,
-				pin: true,
-				anticipatePin: 0,
-				invalidateOnRefresh: true
+				start: 'top 75%',
+				end: 'bottom 55%',
+				scrub: 1
 			}
 		});
 		tl.fromTo(header, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3 }, 0.1);
-		tl.fromTo(container, { width: '100%' }, { width: '80%', duration: 0.3 }, 0);
 		tl.to(container, { gap: '60px', duration: 0.3, ease: 'power3.out' }, 0.35);
 		tl.to(cards, { borderRadius: '20px', duration: 0.3 }, 0.35);
 		tl.to(cards, {
@@ -1403,4 +1417,204 @@
 		});
 	}
 	/* end aos */
+
+	/* start mobile menu — Bootstrap offcanvas, levels slide like the Tympanus blueprint */
+	(function initMobileNav() {
+		var source = document.querySelector('.mainNav .mainMenu');
+		var nav = document.querySelector('.mainNav');
+		if (!source || !nav) {
+			return;
+		}
+		var toggle = document.createElement('button');
+		toggle.className = 'navToggle';
+		toggle.type = 'button';
+		toggle.setAttribute('aria-label', 'باز کردن منو');
+		toggle.setAttribute('aria-controls', 'navOffcanvas');
+		toggle.innerHTML = '<i class="bi bi-list" aria-hidden="true"></i>';
+		nav.insertBefore(toggle, nav.firstChild);
+
+		var cover = document.createElement('div');
+		cover.className = 'navCover';
+		document.body.appendChild(cover);
+
+		var off = document.createElement('div');
+		off.className = 'offcanvas offcanvas-end navOff';
+		off.id = 'navOffcanvas';
+		off.setAttribute('tabindex', '-1');
+		off.setAttribute('aria-hidden', 'true');
+
+		var head = document.createElement('div');
+		head.className = 'offcanvas-header navOff__head';
+		var logo = nav.querySelector('.navLogo');
+		if (logo) {
+			head.appendChild(logo.cloneNode(true));
+		}
+		var closeBtn = document.createElement('button');
+		closeBtn.className = 'navOff__close';
+		closeBtn.type = 'button';
+		closeBtn.setAttribute('aria-label', 'بستن');
+		closeBtn.innerHTML = '<i class="bi bi-x-lg" aria-hidden="true"></i>';
+		head.appendChild(closeBtn);
+
+		var body = document.createElement('div');
+		body.className = 'offcanvas-body navOff__body';
+		var view = document.createElement('div');
+		view.className = 'navOff__view';
+		body.appendChild(view);
+		off.appendChild(head);
+		off.appendChild(body);
+		document.body.appendChild(off);
+
+		function linkText(anchor) {
+			var text = '';
+			Array.prototype.forEach.call(anchor.childNodes, function (node) {
+				if (node.nodeType === 3) {
+					text += node.textContent;
+				}
+			});
+			return text.replace(/\s+/g, ' ').trim();
+		}
+
+		var panels = [];
+		var stack = [];
+
+		function makeLink(href, label) {
+			var item = document.createElement('li');
+			var anchor = document.createElement('a');
+			anchor.className = 'navOff__link';
+			anchor.href = href || '#';
+			anchor.textContent = label;
+			item.appendChild(anchor);
+			return item;
+		}
+
+		function makePanel(ul, label, selfHref) {
+			var panel = document.createElement('div');
+			panel.className = 'navOff__panel';
+			var list = document.createElement('ul');
+			list.className = 'navOff__list';
+			panel.appendChild(list);
+			view.appendChild(panel);
+			/* Push before walking children so the root stays panels[0]. */
+			panels.push(panel);
+			if (label) {
+				var backItem = document.createElement('li');
+				var back = document.createElement('button');
+				back.type = 'button';
+				back.className = 'navOff__back';
+				back.innerHTML = '<i class="bi bi-chevron-right" aria-hidden="true"></i><span>بازگشت</span>';
+				back.addEventListener('click', goBack);
+				backItem.appendChild(back);
+				list.appendChild(backItem);
+			}
+			if (selfHref) {
+				list.appendChild(makeLink(selfHref, label));
+			}
+			Array.prototype.forEach.call(ul.children, function (li) {
+				if (!li.classList || !li.classList.contains('menu-item')) {
+					return;
+				}
+				var anchor = li.querySelector(':scope > a');
+				var sub = li.querySelector(':scope > ul');
+				if (!anchor) {
+					return;
+				}
+				var name = linkText(anchor);
+				if (sub) {
+					var child = makePanel(sub, name, anchor.getAttribute('href'));
+					var item = document.createElement('li');
+					var button = document.createElement('button');
+					button.type = 'button';
+					button.className = 'navOff__next';
+					button.innerHTML = '<span></span><i class="bi bi-chevron-left" aria-hidden="true"></i>';
+					button.querySelector('span').textContent = name;
+					button.addEventListener('click', function () {
+						openPanel(child);
+					});
+					item.appendChild(button);
+					list.appendChild(item);
+				} else {
+					list.appendChild(makeLink(anchor.getAttribute('href'), name));
+				}
+			});
+			return panel;
+		}
+
+		function openPanel(panel) {
+			var current = stack[stack.length - 1];
+			current.classList.remove('is-current');
+			current.classList.add('is-out');
+			panel.classList.add('is-current');
+			panel.classList.remove('is-out');
+			stack.push(panel);
+		}
+
+		function goBack() {
+			if (stack.length < 2) {
+				return;
+			}
+			var current = stack.pop();
+			var prev = stack[stack.length - 1];
+			current.classList.remove('is-current');
+			prev.classList.remove('is-out');
+			prev.classList.add('is-current');
+		}
+
+		var rootPanel = null;
+
+		function resetPanels() {
+			panels.forEach(function (panel) {
+				panel.classList.remove('is-current', 'is-out');
+			});
+			if (rootPanel) {
+				rootPanel.classList.add('is-current');
+				stack = [rootPanel];
+			}
+		}
+
+		rootPanel = makePanel(source, '', '');
+		resetPanels();
+
+		function openNav() {
+			if (window.innerWidth >= 992) {
+				return;
+			}
+			off.classList.add('show');
+			cover.classList.add('is-on');
+			off.setAttribute('aria-hidden', 'false');
+			if (smoother && smoother.paused) {
+				smoother.paused(true);
+			}
+		}
+
+		function closeNav() {
+			off.classList.remove('show');
+			cover.classList.remove('is-on');
+			off.setAttribute('aria-hidden', 'true');
+			if (smoother && smoother.paused) {
+				smoother.paused(false);
+			}
+			window.setTimeout(resetPanels, 320);
+		}
+
+		toggle.addEventListener('click', openNav);
+		closeBtn.addEventListener('click', closeNav);
+		cover.addEventListener('click', closeNav);
+		off.addEventListener('click', function (event) {
+			if (event.target.closest('a')) {
+				closeNav();
+			}
+		});
+		document.addEventListener('keydown', function (event) {
+			if (event.key === 'Escape' && off.classList.contains('show')) {
+				closeNav();
+			}
+		});
+		window.addEventListener('resize', function () {
+			if (window.innerWidth >= 992 && off.classList.contains('show')) {
+				closeNav();
+			}
+		});
+	})();
+	/* end mobile menu */
 })();
